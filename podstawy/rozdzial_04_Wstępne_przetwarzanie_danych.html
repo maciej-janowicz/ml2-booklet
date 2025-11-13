@@ -60,7 +60,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'podstawy/rozdzial_04_Wstępne_przetwarzanie_danych';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="TensorFlow i Keras" href="../biblioteki/rozdzial_07_TensorFlow.html" />
+    <link rel="next" title="Metryki jakości w uczeniu maszynowym" href="../dane/rozdzial_05_Metryki_jako%C5%9Bci_w_uczeniu_maszynowym.html" />
     <link rel="prev" title="Matematyka w uczeniu maszynowym" href="rozdzial_03_Matematyka_w_uczeniu_maszynowym.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -148,14 +148,8 @@
   
   
   
-    
-    
-      
-    
-    
-    <img src="../_static/logo.png" class="logo__image only-light" alt="Elementarne uczenie maszynowe - Home"/>
-    <script>document.write(`<img src="../_static/logo.png" class="logo__image only-dark" alt="Elementarne uczenie maszynowe - Home"/>`);</script>
   
+    <p class="title logo__title">Elementarne uczenie maszynowe</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -176,6 +170,9 @@
 <li class="toctree-l1"><a class="reference internal" href="rozdzial_02_Rodzaje_uczenia_maszynowego.html">Rodzaje uczenia maszynowego</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rozdzial_03_Matematyka_w_uczeniu_maszynowym.html">Matematyka w uczeniu maszynowym</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Wstępne przetwarzanie danych</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dane/rozdzial_05_Metryki_jako%C5%9Bci_w_uczeniu_maszynowym.html">Metryki jakości</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dane/rozdzial_06_In%C5%BCynieria_cech.html">Inżynieria cech</a></li>
+
 <li class="toctree-l1"><a class="reference internal" href="../biblioteki/rozdzial_07_TensorFlow.html">Biblioteka TensorFlow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../biblioteki/rozdzial_08_PyTorch.html">Biblioteka Pytorch</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../klasyczne_ml/rozdzial_09_Uczenie_nadzorowane.html">Uczenie nadzorowane</a></li>
@@ -184,13 +181,13 @@
 <li class="toctree-l1"><a class="reference internal" href="../klasyczne_ml/rozdzial_13_Klasyfikacja_binarna_%C4%87wiczenia.html">Klasyfikacja binarna - ćwiczenia</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../walidacja/rozdzial_14_Walidacja_modeli.html">Walidacja modeli</a></li>
 
-<li class="toctree-l1"><a class="reference internal" href="../g%C5%82%C4%99bokie_ml/rozdzial_15_Sieci_CNN.html">Sieci konwolucyjne</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../g%C5%82%C4%99bokie_ml/rozdzial_16_Sieci_RNN.html">Sieci rekurencyjne</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../g%C5%82%C4%99bokie_ml/rozdzial_17_Sieci_LSTM.html">Sieci LSTM</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../g%C5%82%C4%99bokie_ml/rozdzial_18_Sieci_GAN.html">Sieci GAN</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../g%C5%82%C4%99bokie_ml/rozdzial_19_Architektury_sieci_neuronowych_1.html">Architektury sieci neuronowych, część 1</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../g%C5%82%C4%99bokie_ml/rozdzial_20_Transformery.html">Wstęp do transformerów</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../ensembling/rozdzial_21_Ensembling.html">Metody zespołowe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glebokie_ml/rozdzial_15_Sieci_CNN.html">Sieci konwolucyjne</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glebokie_ml/rozdzial_16_Sieci_RNN.html">Sieci rekurencyjne</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glebokie_ml/rozdzial_17_Sieci_LSTM.html">Sieci LSTM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glebokie_ml/rozdzial_18_Sieci_GAN.html">Sieci GAN</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glebokie_ml/rozdzial_19_Architektury_sieci_neuronowych_1.html">Architektury sieci neuronowych, część 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glebokie_ml/rozdzial_20_Transformery.html">Wstęp do transformerów</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ensemble/rozdzial_21_Ensembling.html">Metody zespołowe</a></li>
 </ul>
 
     </div>
@@ -331,7 +328,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -347,6 +346,48 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#struktura-rozdzialu">Struktura rozdziału</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#podstawowa-funkcja-czyszczenia-danych">1. Podstawowa funkcja czyszczenia danych</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#etapy-czyszczenia">Etapy czyszczenia:</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#uwagi">Uwagi:</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ulepszona-funkcja-czyszczenia-danych">2. Ulepszona funkcja czyszczenia danych</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#zalety-podejscia-z-pipeline-ami">Zalety podejścia z pipeline’ami:</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#najwazniejsze-komponenty">Najważniejsze komponenty:</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pipeline">Pipeline</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#simpleimputer">SimpleImputer</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#columntransformer">ColumnTransformer</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#localoutlierfactor-lof">LocalOutlierFactor (LOF)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#kompleksowe-przygotowanie-danych-do-modelowania">3. Kompleksowe przygotowanie danych do modelowania</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#etapy-przygotowania">Etapy przygotowania:</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dlaczego-skalowanie-jest-wazne">Dlaczego skalowanie jest ważne?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#uwaga-o-bledzie-w-pierwszej-wersji">Uwaga o błędzie w pierwszej wersji:</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#poprawiona-wersja-funkcji-przygotowania-danych">4. Poprawiona wersja funkcji przygotowania danych</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#naprawiony-blad">Naprawiony błąd:</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dodatkowe-zmiany">Dodatkowe zmiany:</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#prawidlowy-przeplyw-skalowania">Prawidłowy przepływ skalowania:</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#podsumowanie">Podsumowanie</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#kluczowe-operacje">Kluczowe operacje:</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#najlepsze-praktyki">Najlepsze praktyki:</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nastepne-kroki">Następne kroki:</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -358,6 +399,59 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="wstepne-przetwarzanie-danych">
 <h1>Wstępne przetwarzanie danych<a class="headerlink" href="#wstepne-przetwarzanie-danych" title="Link to this heading">#</a></h1>
+<p>Wstępne przetwarzanie danych (ang. <em>data preprocessing</em>) to kluczowy etap w procesie analizy danych i budowy modeli uczenia maszynowego. Surowe dane zazwyczaj zawierają różnego rodzaju niedoskonałości, takie jak:</p>
+<ul class="simple">
+<li><p><strong>brakujące wartości</strong> – luki w danych wynikające z błędów w zbieraniu lub przechowywaniu,</p></li>
+<li><p><strong>wartości odstające</strong> – obserwacje znacząco odbiegające od pozostałych danych,</p></li>
+<li><p><strong>duplikaty</strong> – powtarzające się wiersze,</p></li>
+<li><p><strong>niepotrzebne kolumny</strong> – cechy nieistotne dla analizy lub modelowania,</p></li>
+<li><p><strong>niespójne formaty</strong> – różne typy danych w tej samej kolumnie,</p></li>
+<li><p><strong>brak standaryzacji</strong> – cechy o różnych skalach i rozkładach.</p></li>
+</ul>
+<p>Celem wstępnego przetwarzania jest transformacja surowych danych do postaci, która jest czysta, spójna i gotowa do analizy. Prawidłowo wykonane przetwarzanie wstępne:</p>
+<ol class="arabic simple">
+<li><p><strong>Poprawia jakość modeli</strong> – modele uczenia maszynowego działają lepiej na czystych danych,</p></li>
+<li><p><strong>Zwiększa wydajność</strong> – usunięcie redundantnych informacji przyspiesza obliczenia,</p></li>
+<li><p><strong>Redukuje szumy</strong> – eliminacja wartości odstających i błędnych danych,</p></li>
+<li><p><strong>Umożliwia porównania</strong> – standaryzacja pozwala na porównywanie cech o różnych skalach.</p></li>
+</ol>
+<section id="struktura-rozdzialu">
+<h2>Struktura rozdziału<a class="headerlink" href="#struktura-rozdzialu" title="Link to this heading">#</a></h2>
+<p>W tym rozdziale przedstawimy następujące funkcje:</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">czyszczenie_danych()</span></code> – podstawowa wersja funkcji czyszczącej,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">czyszczenie_danych_ulepszone()</span></code> – zaawansowana wersja wykorzystująca pipeline’y,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">przygotowanie_danych()</span></code> – kompleksowa funkcja przygotowująca dane do modelowania.</p></li>
+</ol>
+</section>
+<section id="podstawowa-funkcja-czyszczenia-danych">
+<h2>1. Podstawowa funkcja czyszczenia danych<a class="headerlink" href="#podstawowa-funkcja-czyszczenia-danych" title="Link to this heading">#</a></h2>
+<p>Poniższa funkcja <code class="docutils literal notranslate"><span class="pre">czyszczenie_danych()</span></code> realizuje podstawowe operacje czyszczenia danych:</p>
+<section id="etapy-czyszczenia">
+<h3>Etapy czyszczenia:<a class="headerlink" href="#etapy-czyszczenia" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Usuwanie duplikatów</strong> – identyczne wiersze są zbędne i mogą zakłócać analizę,</p></li>
+<li><p><strong>Usuwanie kolumn identyfikacyjnych</strong> – ID i znaczniki czasowe zazwyczaj nie niosą wartości predykcyjnej,</p></li>
+<li><p><strong>Usuwanie kolumn ze stałą wartością</strong> – cechy bez zmienności nie dostarczają informacji,</p></li>
+<li><p><strong>Imputacja wartości brakujących</strong>:</p>
+<ul class="simple">
+<li><p>dla zmiennych numerycznych (float) – średnia,</p></li>
+<li><p>dla zmiennych całkowitych (int) – wartość najczęstsza,</p></li>
+<li><p>dla zmiennych tekstowych (object) – wartość stała “NIEZNANE”,</p></li>
+</ul>
+</li>
+<li><p><strong>Wykrywanie wartości odstających</strong> – algorytm LocalOutlierFactor identyfikuje obserwacje odbiegające od normy.</p></li>
+</ol>
+</section>
+<section id="uwagi">
+<h3>Uwagi:<a class="headerlink" href="#uwagi" title="Link to this heading">#</a></h3>
+<p>Ta wersja funkcji ma pewne ograniczenia:</p>
+<ul class="simple">
+<li><p>operacje wykonywane są sekwencyjnie, co utrudnia zarządzanie kodem,</p></li>
+<li><p>brak elastyczności w wyborze strategii imputacji,</p></li>
+<li><p>trudności w integracji z innymi narzędziami scikit-learn.</p></li>
+</ul>
+<p>Dlatego w następnej sekcji przedstawimy ulepszoną wersję wykorzystującą mechanizm pipeline’ów.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">czyszczenie_danych</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
@@ -401,6 +495,58 @@ document.write(`
 </div>
 </div>
 </div>
+</section>
+</section>
+<section id="ulepszona-funkcja-czyszczenia-danych">
+<h2>2. Ulepszona funkcja czyszczenia danych<a class="headerlink" href="#ulepszona-funkcja-czyszczenia-danych" title="Link to this heading">#</a></h2>
+<p>Funkcja <code class="docutils literal notranslate"><span class="pre">czyszczenie_danych_ulepszone()</span></code> wykorzystuje mechanizm <strong>pipeline’ów</strong> z biblioteki scikit-learn, co zapewnia:</p>
+<section id="zalety-podejscia-z-pipeline-ami">
+<h3>Zalety podejścia z pipeline’ami:<a class="headerlink" href="#zalety-podejscia-z-pipeline-ami" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Modularność</strong> – każdy krok przetwarzania jest jasno zdefiniowany,</p></li>
+<li><p><strong>Powtarzalność</strong> – łatwo zastosować te same transformacje na nowych danych,</p></li>
+<li><p><strong>Integracja</strong> – bezproblemowa współpraca z walidacją krzyżową i grid search,</p></li>
+<li><p><strong>Unikanie wycieków danych</strong> – transformacje na zbiorze testowym wykorzystują parametry ze zbioru treningowego.</p></li>
+</ol>
+</section>
+<section id="najwazniejsze-komponenty">
+<h3>Najważniejsze komponenty:<a class="headerlink" href="#najwazniejsze-komponenty" title="Link to this heading">#</a></h3>
+<section id="pipeline">
+<h4>Pipeline<a class="headerlink" href="#pipeline" title="Link to this heading">#</a></h4>
+<p>Łączy sekwencję transformacji w jeden obiekt. Automatycznie wywołuje <code class="docutils literal notranslate"><span class="pre">fit()</span></code> i <code class="docutils literal notranslate"><span class="pre">transform()</span></code> na kolejnych etapach.</p>
+</section>
+<section id="simpleimputer">
+<h4>SimpleImputer<a class="headerlink" href="#simpleimputer" title="Link to this heading">#</a></h4>
+<p>Klasa do uzupełniania brakujących wartości. Dostępne strategie:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">mean</span></code> – średnia arytmetyczna (dla danych numerycznych),</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">median</span></code> – mediana (odporna na wartości odstające),</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">most_frequent</span></code> – wartość najczęstsza (dla danych kategorialnych),</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">constant</span></code> – określona stała wartość.</p></li>
+</ul>
+</section>
+<section id="columntransformer">
+<h4>ColumnTransformer<a class="headerlink" href="#columntransformer" title="Link to this heading">#</a></h4>
+<p>Pozwala stosować różne transformacje do różnych grup kolumn. W naszym przypadku:</p>
+<ul class="simple">
+<li><p>cechy numeryczne → imputacja średnią,</p></li>
+<li><p>cechy kategorialne → imputacja stałą wartością “NIEZNANE”.</p></li>
+</ul>
+</section>
+<section id="localoutlierfactor-lof">
+<h4>LocalOutlierFactor (LOF)<a class="headerlink" href="#localoutlierfactor-lof" title="Link to this heading">#</a></h4>
+<p>Algorytm wykrywania anomalii oparty na gęstości lokalnej. Punkty o niskiej gęstości lokalnej w porównaniu do sąsiadów są klasyfikowane jako wartości odstające (outliers).</p>
+<p><strong>Parametry LOF:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">n_neighbors</span></code> – liczba sąsiadów do analizy,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">contamination</span></code> – oczekiwany odsetek wartości odstających,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">novelty</span></code> – tryb wykrywania nowości vs. anomalii w danych treningowych.</p></li>
+</ul>
+<p>Metoda <code class="docutils literal notranslate"><span class="pre">fit_predict()</span></code> zwraca:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">1</span></code> – normalne obserwacje,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code> – wartości odstające.</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">czyszczenie_danych_ulepszone</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
@@ -532,6 +678,54 @@ document.write(`
 </div>
 </div>
 </div>
+</section>
+</section>
+</section>
+<section id="kompleksowe-przygotowanie-danych-do-modelowania">
+<h2>3. Kompleksowe przygotowanie danych do modelowania<a class="headerlink" href="#kompleksowe-przygotowanie-danych-do-modelowania" title="Link to this heading">#</a></h2>
+<p>Funkcja <code class="docutils literal notranslate"><span class="pre">przygotowanie_danych()</span></code> realizuje pełny proces przygotowania danych, obejmujący:</p>
+<section id="etapy-przygotowania">
+<h3>Etapy przygotowania:<a class="headerlink" href="#etapy-przygotowania" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Czyszczenie danych</strong> – wywołanie funkcji <code class="docutils literal notranslate"><span class="pre">czyszczenie_danych()</span></code>,</p></li>
+<li><p><strong>Separacja cech i etykiet</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">X</span></code> – cechy (zmienne niezależne),</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">y</span></code> – etykieta <code class="docutils literal notranslate"><span class="pre">fraud_wyk</span></code> (zmienna zależna),</p></li>
+</ul>
+</li>
+<li><p><strong>Kodowanie zmiennych kategorialnych</strong>:</p>
+<ul class="simple">
+<li><p>Użycie <code class="docutils literal notranslate"><span class="pre">pd.get_dummies()</span></code> – one-hot encoding,</p></li>
+<li><p>Przekształcenie kategorii w kolumny binarne (0/1),</p></li>
+</ul>
+</li>
+<li><p><strong>Podział na zbiory treningowy i testowy</strong>:</p>
+<ul class="simple">
+<li><p>Proporcja 67% train / 33% test,</p></li>
+<li><p>Użycie <code class="docutils literal notranslate"><span class="pre">train_test_split()</span></code> z scikit-learn,</p></li>
+</ul>
+</li>
+<li><p><strong>Skalowanie cech numerycznych</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">MinMaxScaler</span></code> – normalizacja do zakresu [0, 1],</p></li>
+<li><p>Ważne: skalowanie tylko na zbiorze treningowym, a następnie zastosowanie tych samych parametrów na zbiorze testowym.</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="dlaczego-skalowanie-jest-wazne">
+<h3>Dlaczego skalowanie jest ważne?<a class="headerlink" href="#dlaczego-skalowanie-jest-wazne" title="Link to this heading">#</a></h3>
+<p>Wiele algorytmów uczenia maszynowego (np. SVM, k-NN, sieci neuronowe) jest wrażliwych na skalę cech. Cechy o większych wartościach mogą dominować w procesie uczenia. Skalowanie zapewnia:</p>
+<ul class="simple">
+<li><p><strong>Równowagę</strong> – wszystkie cechy mają podobny wpływ na model,</p></li>
+<li><p><strong>Szybszą zbieżność</strong> – optymalizacja przebiega efektywniej,</p></li>
+<li><p><strong>Lepszą interpretację</strong> – współczynniki modelu są porównywalne.</p></li>
+</ul>
+</section>
+<section id="uwaga-o-bledzie-w-pierwszej-wersji">
+<h3>Uwaga o błędzie w pierwszej wersji:<a class="headerlink" href="#uwaga-o-bledzie-w-pierwszej-wersji" title="Link to this heading">#</a></h3>
+<p>W pierwszej wersji funkcji brakuje przypisania wyniku <code class="docutils literal notranslate"><span class="pre">mmsc.transform()</span></code> do zmiennych. Została to poprawione w drugiej wersji funkcji (cell 4).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">przygotowanie_danych</span><span class="p">(</span><span class="n">df_prim</span><span class="p">):</span>
@@ -582,6 +776,39 @@ document.write(`
 </div>
 </div>
 </div>
+</section>
+</section>
+<section id="poprawiona-wersja-funkcji-przygotowania-danych">
+<h2>4. Poprawiona wersja funkcji przygotowania danych<a class="headerlink" href="#poprawiona-wersja-funkcji-przygotowania-danych" title="Link to this heading">#</a></h2>
+<p>Poniższa wersja funkcji zawiera <strong>poprawkę krytycznego błędu</strong> z poprzedniej wersji.</p>
+<section id="naprawiony-blad">
+<h3>Naprawiony błąd:<a class="headerlink" href="#naprawiony-blad" title="Link to this heading">#</a></h3>
+<p>W poprzedniej wersji (cell 3) nie było przypisania wyniku transformacji:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># BŁĄD - brak przypisania:</span>
+<span class="n">mmsc</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">Xtest_float</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Poprawna wersja:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># POPRAWNIE - z przypisaniem:</span>
+<span class="n">Xtest_float</span> <span class="o">=</span> <span class="n">mmsc</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">Xtest_float</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="dodatkowe-zmiany">
+<h3>Dodatkowe zmiany:<a class="headerlink" href="#dodatkowe-zmiany" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Usunięto nieużywane zmienne (<code class="docutils literal notranslate"><span class="pre">sc</span></code>, <code class="docutils literal notranslate"><span class="pre">StandardScaler</span></code>),</p></li>
+<li><p>Usunięto wywołanie funkcji <code class="docutils literal notranslate"><span class="pre">selekcja_cech_num()</span></code>, która nie jest zdefiniowana w tym notatniku.</p></li>
+</ul>
+</section>
+<section id="prawidlowy-przeplyw-skalowania">
+<h3>Prawidłowy przepływ skalowania:<a class="headerlink" href="#prawidlowy-przeplyw-skalowania" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">mmsc.fit(Xtrain_float)</span></code> – obliczenie parametrów (min, max) na zbiorze treningowym,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Xtrain_float</span> <span class="pre">=</span> <span class="pre">mmsc.transform(Xtrain_float)</span></code> – zastosowanie transformacji na zbiorze treningowym,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Xtest_float</span> <span class="pre">=</span> <span class="pre">mmsc.transform(Xtest_float)</span></code> – zastosowanie <strong>tych samych parametrów</strong> na zbiorze testowym.</p></li>
+</ol>
+<p><strong>Ważne:</strong> Nigdy nie używamy <code class="docutils literal notranslate"><span class="pre">fit()</span></code> na zbiorze testowym! To mogłoby prowadzić do wycieku informacji (<em>data leakage</em>).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">przygotowanie_danych</span><span class="p">(</span><span class="n">df_prim</span><span class="p">):</span>
@@ -628,6 +855,57 @@ document.write(`
 </div>
 </div>
 </section>
+</section>
+<section id="podsumowanie">
+<h2>Podsumowanie<a class="headerlink" href="#podsumowanie" title="Link to this heading">#</a></h2>
+<p>W tym rozdziale przedstawiliśmy kompleksowy proces wstępnego przetwarzania danych, który obejmuje:</p>
+<section id="kluczowe-operacje">
+<h3>Kluczowe operacje:<a class="headerlink" href="#kluczowe-operacje" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Czyszczenie danych</strong>:</p>
+<ul class="simple">
+<li><p>Usuwanie duplikatów,</p></li>
+<li><p>Eliminacja niepotrzebnych kolumn,</p></li>
+<li><p>Imputacja wartości brakujących,</p></li>
+<li><p>Wykrywanie i usuwanie wartości odstających.</p></li>
+</ul>
+</li>
+<li><p><strong>Transformacja danych</strong>:</p>
+<ul class="simple">
+<li><p>Kodowanie zmiennych kategorialnych (one-hot encoding),</p></li>
+<li><p>Skalowanie cech numerycznych.</p></li>
+</ul>
+</li>
+<li><p><strong>Przygotowanie do modelowania</strong>:</p>
+<ul class="simple">
+<li><p>Podział na zbiory treningowy i testowy,</p></li>
+<li><p>Separacja cech i etykiet.</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="najlepsze-praktyki">
+<h3>Najlepsze praktyki:<a class="headerlink" href="#najlepsze-praktyki" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Używaj pipeline’ów</strong> – zapewniają spójność i unikają błędów,</p></li>
+<li><p><strong>Unikaj wycieku danych</strong> – transformacje obliczane na zbiorze treningowym, stosowane na testowym,</p></li>
+<li><p><strong>Dokumentuj kod</strong> – jasne komentarze ułatwiają utrzymanie i rozwój,</p></li>
+<li><p><strong>Sprawdzaj kształty danych</strong> – regularne wyświetlanie wymiarów pomaga wykryć błędy.</p></li>
+</ul>
+</section>
+<section id="nastepne-kroki">
+<h3>Następne kroki:<a class="headerlink" href="#nastepne-kroki" title="Link to this heading">#</a></h3>
+<p>Po przygotowaniu danych możemy przejść do:</p>
+<ul class="simple">
+<li><p>Selekcji cech (feature selection),</p></li>
+<li><p>Inżynierii cech (feature engineering),</p></li>
+<li><p>Budowy i trenowania modeli uczenia maszynowego,</p></li>
+<li><p>Walidacji i ewaluacji wyników.</p></li>
+</ul>
+<p><strong>Jakość danych wejściowych bezpośrednio wpływa na jakość modelu uczenia maszynowego</strong>. Dlatego wstępne przetwarzanie jest tak ważne.</p>
+</section>
+</section>
+</section>
 
     <script type="text/x-thebe-config">
     {
@@ -669,11 +947,11 @@ document.write(`
       </div>
     </a>
     <a class="right-next"
-       href="../biblioteki/rozdzial_07_TensorFlow.html"
+       href="../dane/rozdzial_05_Metryki_jako%C5%9Bci_w_uczeniu_maszynowym.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">TensorFlow i Keras</p>
+        <p class="prev-next-title">Metryki jakości w uczeniu maszynowym</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -683,6 +961,55 @@ document.write(`
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#struktura-rozdzialu">Struktura rozdziału</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#podstawowa-funkcja-czyszczenia-danych">1. Podstawowa funkcja czyszczenia danych</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#etapy-czyszczenia">Etapy czyszczenia:</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#uwagi">Uwagi:</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ulepszona-funkcja-czyszczenia-danych">2. Ulepszona funkcja czyszczenia danych</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#zalety-podejscia-z-pipeline-ami">Zalety podejścia z pipeline’ami:</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#najwazniejsze-komponenty">Najważniejsze komponenty:</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pipeline">Pipeline</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#simpleimputer">SimpleImputer</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#columntransformer">ColumnTransformer</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#localoutlierfactor-lof">LocalOutlierFactor (LOF)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#kompleksowe-przygotowanie-danych-do-modelowania">3. Kompleksowe przygotowanie danych do modelowania</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#etapy-przygotowania">Etapy przygotowania:</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dlaczego-skalowanie-jest-wazne">Dlaczego skalowanie jest ważne?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#uwaga-o-bledzie-w-pierwszej-wersji">Uwaga o błędzie w pierwszej wersji:</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#poprawiona-wersja-funkcji-przygotowania-danych">4. Poprawiona wersja funkcji przygotowania danych</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#naprawiony-blad">Naprawiony błąd:</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dodatkowe-zmiany">Dodatkowe zmiany:</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#prawidlowy-przeplyw-skalowania">Prawidłowy przepływ skalowania:</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#podsumowanie">Podsumowanie</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#kluczowe-operacje">Kluczowe operacje:</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#najlepsze-praktyki">Najlepsze praktyki:</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nastepne-kroki">Następne kroki:</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>

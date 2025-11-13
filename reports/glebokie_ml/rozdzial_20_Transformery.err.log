@@ -1,0 +1,98 @@
+Traceback (most recent call last):
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/jupyter_cache/executors/utils.py", line 58, in single_nb_execution
+    executenb(
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/nbclient/client.py", line 1305, in execute
+    return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/jupyter_core/utils/__init__.py", line 165, in wrapped
+    return loop.run_until_complete(inner)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/maciej/anaconda3/lib/python3.12/asyncio/base_events.py", line 685, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/nbclient/client.py", line 705, in async_execute
+    await self.async_execute_cell(
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/nbclient/client.py", line 1058, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/nbclient/client.py", line 914, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+# Przykład
+
+import tensorflow as tf
+from tensorflow.keras.layers import Input, Dense, GlobalMaxPooling1D
+from tensorflow.keras.layers import Embedding, MultiHeadAttention, LayerNormalization, Dropout
+from tensorflow.keras.models import Model
+from tensorflow.keras.datasets import imdb
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+import numpy as np
+
+# Parametry
+vocab_size = 20000  # Liczba słów w słowniku
+maxlen = 200        # Maksymalna długość sekwencji
+embed_dim = 32      # Wymiar embeddingu
+num_heads = 2       # Liczba głów w mechanizmie uwagi
+ff_dim = 32         # Wymiar warstwy feed-forward
+batch_size = 32
+epochs = 2
+
+# Wczytanie danych IMDB
+(x_train, y_train), (x_test, y_test) = imdb.load_data(num_words=vocab_size)
+
+# Przygotowanie danych (padding)
+x_train = pad_sequences(x_train, maxlen=maxlen)
+x_test = pad_sequences(x_test, maxlen=maxlen)
+
+# Definicja warstwy Transformer Encoder
+class TransformerBlock(tf.keras.layers.Layer):
+    def __init__(self, embed_dim, num_heads, ff_dim, rate=0.1):
+        super(TransformerBlock, self).__init__()
+        self.att = MultiHeadAttention(num_heads=num_heads, key_dim=embed_dim)
+        self.ffn = tf.keras.Sequential([
+            Dense(ff_dim, activation="relu"),
+            Dense(embed_dim),
+        ])
+        self.layernorm1 = LayerNormalization(epsilon=1e-6)
+        self.layernorm2 = LayerNormalization(epsilon=1e-6)
+        self.dropout1 = Dropout(rate)
+        self.dropout2 = Dropout(rate)
+
+    def call(self, inputs, training = False):
+        attn_output = self.att(inputs, inputs)
+        attn_output = self.dropout1(attn_output, training=training)
+        out1 = self.layernorm1(inputs + attn_output)
+        ffn_output = self.ffn(out1)
+        ffn_output = self.dropout2(ffn_output, training=training)
+        return self.layernorm2(out1 + ffn_output)
+
+# Budowa modelu
+inputs = Input(shape=(maxlen,))
+embedding_layer = Embedding(vocab_size, embed_dim)(inputs)
+transformer_block = TransformerBlock(embed_dim, num_heads, ff_dim)(embedding_layer)
+pooling_layer = GlobalMaxPooling1D()(transformer_block)
+outputs = Dense(1, activation="sigmoid")(pooling_layer)
+
+model = Model(inputs, outputs)
+model.compile(optimizer="adam", loss="binary_crossentropy", metrics=["accuracy"])
+model.summary()
+
+# Trenowanie modelu
+history = model.fit(x_train, y_train, batch_size=batch_size, epochs=epochs, validation_data=(x_test, y_test))
+
+# Ocena modelu
+loss, accuracy = model.evaluate(x_test, y_test)
+print(f"Test Accuracy: {accuracy:.4f}")
+------------------
+
+
+[0;31m---------------------------------------------------------------------------[0m
+[0;31mModuleNotFoundError[0m                       Traceback (most recent call last)
+Cell [0;32mIn[1], line 3[0m
+[1;32m      1[0m [38;5;66;03m# Przykład[39;00m
+[0;32m----> 3[0m [38;5;28;01mimport[39;00m [38;5;21;01mtensorflow[39;00m [38;5;28;01mas[39;00m [38;5;21;01mtf[39;00m
+[1;32m      4[0m [38;5;28;01mfrom[39;00m [38;5;21;01mtensorflow[39;00m[38;5;21;01m.[39;00m[38;5;21;01mkeras[39;00m[38;5;21;01m.[39;00m[38;5;21;01mlayers[39;00m [38;5;28;01mimport[39;00m Input, Dense, GlobalMaxPooling1D
+[1;32m      5[0m [38;5;28;01mfrom[39;00m [38;5;21;01mtensorflow[39;00m[38;5;21;01m.[39;00m[38;5;21;01mkeras[39;00m[38;5;21;01m.[39;00m[38;5;21;01mlayers[39;00m [38;5;28;01mimport[39;00m Embedding, MultiHeadAttention, LayerNormalization, Dropout
+
+[0;31mModuleNotFoundError[0m: No module named 'tensorflow'
+

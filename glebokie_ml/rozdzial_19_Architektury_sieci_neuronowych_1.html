@@ -1,0 +1,1127 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Architektury sieci neuronowych &#8212; Elementarne uczenie maszynowe</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b76e3c8a" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'glebokie_ml/rozdzial_19_Architektury_sieci_neuronowych_1';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Transformery" href="rozdzial_20_Transformery.html" />
+    <link rel="prev" title="Sieci GAN" href="rozdzial_18_Sieci_GAN.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Elementarne uczenie maszynowe</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../podstawy/rozdzial_01_Wst%C4%99p_do_uczenia_maszynowego.html">Wstęp do uczenia maszynowego</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../podstawy/rozdzial_02_Rodzaje_uczenia_maszynowego.html">Rodzaje uczenia maszynowego</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../podstawy/rozdzial_03_Matematyka_w_uczeniu_maszynowym.html">Matematyka w uczeniu maszynowym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../podstawy/rozdzial_04_Wst%C4%99pne_przetwarzanie_danych.html">Wstępne przetwarzanie danych</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dane/rozdzial_05_Metryki_jako%C5%9Bci_w_uczeniu_maszynowym.html">Metryki jakości</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dane/rozdzial_06_In%C5%BCynieria_cech.html">Inżynieria cech</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../biblioteki/rozdzial_07_TensorFlow.html">Biblioteka TensorFlow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../biblioteki/rozdzial_08_PyTorch.html">Biblioteka Pytorch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../klasyczne_ml/rozdzial_09_Uczenie_nadzorowane.html">Uczenie nadzorowane</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../klasyczne_ml/rozdzial_10_Uczenie_nienadzorowane.html">Uczenie nienadzorowane</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../klasyczne_ml/rozdzial_11_Modele_liniowe_i_drzewiaste.html">Modele liniowe i drzewiaste</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../klasyczne_ml/rozdzial_13_Klasyfikacja_binarna_%C4%87wiczenia.html">Klasyfikacja binarna - ćwiczenia</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../walidacja/rozdzial_14_Walidacja_modeli.html">Walidacja modeli</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="rozdzial_15_Sieci_CNN.html">Sieci konwolucyjne</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rozdzial_16_Sieci_RNN.html">Sieci rekurencyjne</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rozdzial_17_Sieci_LSTM.html">Sieci LSTM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rozdzial_18_Sieci_GAN.html">Sieci GAN</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Architektury sieci neuronowych, część 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rozdzial_20_Transformery.html">Wstęp do transformerów</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ensemble/rozdzial_21_Ensembling.html">Metody zespołowe</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/maciej-janowicz/ml-book" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/glebokie_ml/rozdzial_19_Architektury_sieci_neuronowych_1.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Architektury sieci neuronowych</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#podstawy-i-ewolucja-architektur-neuronowych-czesc-1">Podstawy i ewolucja architektur neuronowych. Część 1</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spis-tresci">Spis treści</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#wprowadzenie">Wprowadzenie</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#historia-rozwoju-sieci-neuronowych">1.1 Historia rozwoju sieci neuronowych</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#perceptron-1958-poczatek-ery">Perceptron (1958) - Początek ery</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#zima-ai-i-przelom-lat-80">Zima AI i przełom lat 80.</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wsteczna-propagacja-bledu">Wsteczna propagacja błędu</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#glebokie-sieci-neuronowe-2006-2012">Głębokie sieci neuronowe (2006-2012)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#era-imagenet-i-przelom-2012-roku">Era ImageNet i przełom 2012 roku</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#kluczowe-problemy-klasycznych-architektur">1.2 Kluczowe problemy klasycznych architektur</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#problem-zanikajacego-eksplodujacego-gradientu">Problem zanikającego/eksplodującego gradientu</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#overfitting-w-glebokich-sieciach">Overfitting w głębokich sieciach</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ograniczenia-w-modelowaniu-dlugoterminowych-zaleznosci">Ograniczenia w modelowaniu długoterminowych zależności</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#koszty-obliczeniowe">Koszty obliczeniowe</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#przelomowe-innowacje-techniczne">1.3 Przełomowe innowacje techniczne</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dropout">Dropout</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#batch-normalization">Batch Normalization</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#skip-connections-i-residual-learning">Skip Connections i Residual Learning</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#attention-mechanism">Attention Mechanism</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#transfer-learning">Transfer Learning</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dlaczego-potrzebujemy-nowych-architektur">1.4 Dlaczego potrzebujemy nowych architektur</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nowe-dziedziny-zastosowan">Nowe dziedziny zastosowań</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rosnace-wymagania">Rosnące wymagania</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#kierunki-rozwoju">Kierunki rozwoju</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#podsumowanie-modulu-1">Podsumowanie Modułu 1</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#kluczowe-punkty-historyczne">Kluczowe punkty historyczne:</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#glowne-problemy-i-rozwiazania">Główne problemy i rozwiązania:</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#przelomowe-innowacje">Przełomowe innowacje:</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wspolczesne-wyzwania">Współczesne wyzwania:</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#co-dalej">Co dalej?</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="architektury-sieci-neuronowych">
+<h1>Architektury sieci neuronowych<a class="headerlink" href="#architektury-sieci-neuronowych" title="Link to this heading">#</a></h1>
+<section id="podstawy-i-ewolucja-architektur-neuronowych-czesc-1">
+<h2>Podstawy i ewolucja architektur neuronowych. Część 1<a class="headerlink" href="#podstawy-i-ewolucja-architektur-neuronowych-czesc-1" title="Link to this heading">#</a></h2>
+</section>
+<section id="spis-tresci">
+<h2>Spis treści<a class="headerlink" href="#spis-tresci" title="Link to this heading">#</a></h2>
+<ol class="arabic simple">
+<li><p><a class="reference internal" href="#wprowadzenie"><span class="xref myst">Wprowadzenie</span></a></p></li>
+<li><p><a class="reference internal" href="#11-historia-rozwoju-sieci-neuronowych"><span class="xref myst">Historia rozwoju sieci neuronowych</span></a></p></li>
+<li><p><a class="reference internal" href="#12-kluczowe-problemy-klasycznych-architektur"><span class="xref myst">Kluczowe problemy klasycznych architektur</span></a></p></li>
+<li><p><a class="reference internal" href="#13-prze%C5%82omowe-innowacje-techniczne"><span class="xref myst">Przełomowe innowacje techniczne</span></a></p></li>
+<li><p><a class="reference internal" href="#14-dlaczego-potrzebujemy-nowych-architektur"><span class="xref myst">Dlaczego potrzebujemy nowych architektur</span></a></p></li>
+<li><p><a class="reference internal" href="#podsumowanie-modu%C5%82u-1"><span class="xref myst">Podsumowanie modułu</span></a></p></li>
+</ol>
+</section>
+<hr class="docutils" />
+<section id="wprowadzenie">
+<h2>Wprowadzenie<a class="headerlink" href="#wprowadzenie" title="Link to this heading">#</a></h2>
+<p>Aby zrozumieć nowoczesne architektury sieci neuronowych, musimy najpierw poznać historię ich rozwoju i kluczowe problemy, które doprowadziły do powstania innowacyjnych rozwiązań. Ten moduł przedstawia fundament, na którym zbudowane są wszystkie współczesne architektury.</p>
+</section>
+<hr class="docutils" />
+<section id="historia-rozwoju-sieci-neuronowych">
+<h2>1.1 Historia rozwoju sieci neuronowych<a class="headerlink" href="#historia-rozwoju-sieci-neuronowych" title="Link to this heading">#</a></h2>
+<section id="perceptron-1958-poczatek-ery">
+<h3>Perceptron (1958) - Początek ery<a class="headerlink" href="#perceptron-1958-poczatek-ery" title="Link to this heading">#</a></h3>
+<p>Frank Rosenblatt stworzył <strong>perceptron</strong> - pierwszą implementację sztucznego neuronu zdolnego do uczenia się. Perceptron to prosty model liniowy, który może klasyfikować dane liniowo separowalne.</p>
+<p><strong>Kluczowa idea:</strong> Neuron sumuje ważone wejścia i aktywuje się, gdy suma przekracza próg.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="c1"># Prosty perceptron dla problemu AND</span>
+<span class="k">class</span> <span class="nc">Perceptron</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lr</span> <span class="o">=</span> <span class="n">lr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_iter</span> <span class="o">=</span> <span class="n">n_iter</span>
+    
+    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="mf">0.01</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bias</span> <span class="o">=</span> <span class="mi">0</span>
+        
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_iter</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">xi</span><span class="p">,</span> <span class="n">yi</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+                <span class="n">pred</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">bias</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
+                <span class="n">update</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lr</span> <span class="o">*</span> <span class="p">(</span><span class="n">yi</span> <span class="o">-</span> <span class="n">pred</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">+=</span> <span class="n">update</span> <span class="o">*</span> <span class="n">xi</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">bias</span> <span class="o">+=</span> <span class="n">update</span>
+
+<span class="c1"># Problem AND</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]])</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+
+<span class="n">p</span> <span class="o">=</span> <span class="n">Perceptron</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Perceptron nauczył się AND!&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Ograniczenie:</strong> Nie może nauczyć się funkcji XOR (nie jest liniowo separowalna).</p>
+</section>
+<hr class="docutils" />
+<section id="zima-ai-i-przelom-lat-80">
+<h3>Zima AI i przełom lat 80.<a class="headerlink" href="#zima-ai-i-przelom-lat-80" title="Link to this heading">#</a></h3>
+<p>W latach 1969-1986 rozwój sieci neuronowych prawie zamarł z powodu niemożności rozwiązania problemu XOR i braku algorytmów trenowania wielowarstwowych sieci.</p>
+<p><strong>Przełom:</strong> Odkrycie <strong>wstecznej propagacji błędu</strong> (backpropagation) przez Rumelharta, Hintona i Williamsa w 1986 roku umożliwiło trenowanie wielowarstwowych sieci.</p>
+</section>
+<hr class="docutils" />
+<section id="wsteczna-propagacja-bledu">
+<h3>Wsteczna propagacja błędu<a class="headerlink" href="#wsteczna-propagacja-bledu" title="Link to this heading">#</a></h3>
+<p>Backpropagation to algorytm, który efektywnie oblicza gradienty funkcji straty względem wag sieci, wykorzystując <strong>regułę łańcuchową</strong>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Prosta 2-warstwowa sieć z backpropagation</span>
+<span class="k">class</span> <span class="nc">NeuralNetwork</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">,</span> <span class="n">output_size</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">W1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">input_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">W2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">hidden_size</span><span class="p">,</span> <span class="n">output_size</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span>
+    
+    <span class="k">def</span> <span class="nf">sigmoid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">-</span><span class="mi">500</span><span class="p">,</span> <span class="mi">500</span><span class="p">)))</span>
+    
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hidden</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">W1</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hidden</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">W2</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">output</span>
+    
+    <span class="k">def</span> <span class="nf">backward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+        <span class="c1"># Gradient na wyjściu</span>
+        <span class="n">output_error</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="o">-</span> <span class="n">y</span>
+        <span class="n">output_delta</span> <span class="o">=</span> <span class="n">output_error</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>
+        
+        <span class="c1"># Propagacja do warstwy ukrytej (reguła łańcuchowa!)</span>
+        <span class="n">hidden_error</span> <span class="o">=</span> <span class="n">output_delta</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">W2</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+        <span class="n">hidden_delta</span> <span class="o">=</span> <span class="n">hidden_error</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden</span><span class="p">)</span>
+        
+        <span class="c1"># Aktualizacja wag</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">W2</span> <span class="o">-=</span> <span class="n">lr</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">output_delta</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">W1</span> <span class="o">-=</span> <span class="n">lr</span> <span class="o">*</span> <span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">hidden_delta</span><span class="p">)</span>
+
+<span class="c1"># XOR - niemożliwe dla perceptronu, ale możliwe dla sieci wielowarstwowej!</span>
+<span class="n">X_xor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]])</span>
+<span class="n">y_xor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+
+<span class="n">nn</span> <span class="o">=</span> <span class="n">NeuralNetwork</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5000</span><span class="p">):</span>
+    <span class="n">nn</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">X_xor</span><span class="p">)</span>
+    <span class="n">nn</span><span class="o">.</span><span class="n">backward</span><span class="p">(</span><span class="n">X_xor</span><span class="p">,</span> <span class="n">y_xor</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Sieć nauczyła się XOR!&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="glebokie-sieci-neuronowe-2006-2012">
+<h3>Głębokie sieci neuronowe (2006-2012)<a class="headerlink" href="#glebokie-sieci-neuronowe-2006-2012" title="Link to this heading">#</a></h3>
+<p>Renesans sieci neuronowych dzięki:</p>
+<ul class="simple">
+<li><p><strong>Pre-training</strong> (Hinton, 2006)</p></li>
+<li><p><strong>ReLU activation</strong> (szybsza niż sigmoid)</p></li>
+<li><p><strong>Dropout</strong> (regularyzacja)</p></li>
+<li><p><strong>GPU computing</strong> (tysiące razy szybsze trenowanie)</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="era-imagenet-i-przelom-2012-roku">
+<h3>Era ImageNet i przełom 2012 roku<a class="headerlink" href="#era-imagenet-i-przelom-2012-roku" title="Link to this heading">#</a></h3>
+<p><strong>AlexNet (2012)</strong> - przełom w deep learning:</p>
+<ul class="simple">
+<li><p>Pierwsza głęboka CNN, która wygrała ILSVRC</p></li>
+<li><p>Błąd: 16.4% (vs 26% tradycyjne metody)</p></li>
+<li><p>Wykorzystanie GPU, ReLU, dropout</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Wizualizacja postępu ImageNet</span>
+<span class="n">years</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2010</span><span class="p">,</span> <span class="mi">2011</span><span class="p">,</span> <span class="mi">2012</span><span class="p">,</span> <span class="mi">2013</span><span class="p">,</span> <span class="mi">2014</span><span class="p">,</span> <span class="mi">2015</span><span class="p">,</span> <span class="mi">2017</span><span class="p">]</span>
+<span class="n">errors</span> <span class="o">=</span> <span class="p">[</span><span class="mf">28.2</span><span class="p">,</span> <span class="mf">25.8</span><span class="p">,</span> <span class="mf">16.4</span><span class="p">,</span> <span class="mf">11.7</span><span class="p">,</span> <span class="mf">7.3</span><span class="p">,</span> <span class="mf">3.6</span><span class="p">,</span> <span class="mf">2.25</span><span class="p">]</span>
+<span class="n">models</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Traditional&#39;</span><span class="p">,</span> <span class="s1">&#39;Traditional&#39;</span><span class="p">,</span> <span class="s1">&#39;AlexNet&#39;</span><span class="p">,</span> <span class="s1">&#39;ZFNet&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;GoogLeNet&#39;</span><span class="p">,</span> <span class="s1">&#39;ResNet&#39;</span><span class="p">,</span> <span class="s1">&#39;SENet&#39;</span><span class="p">]</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">years</span><span class="p">,</span> <span class="n">errors</span><span class="p">,</span> <span class="s1">&#39;o-&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="mf">5.1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Human-level&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Rok&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Top-5 Error (%)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Rewolucja Deep Learning (ImageNet)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="kluczowe-problemy-klasycznych-architektur">
+<h2>1.2 Kluczowe problemy klasycznych architektur<a class="headerlink" href="#kluczowe-problemy-klasycznych-architektur" title="Link to this heading">#</a></h2>
+<section id="problem-zanikajacego-eksplodujacego-gradientu">
+<h3>Problem zanikającego/eksplodującego gradientu<a class="headerlink" href="#problem-zanikajacego-eksplodujacego-gradientu" title="Link to this heading">#</a></h3>
+<p><strong>Zanikający gradient:</strong> W głębokich sieciach gradienty stają się coraz mniejsze, co powoduje, że wczesne warstwy uczą się bardzo wolno.</p>
+<p><strong>Eksplodujący gradient:</strong> Gradienty rosną wykładniczo, powodując niestabilność.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Symulacja zanikającego gradientu</span>
+<span class="k">def</span> <span class="nf">gradient_flow</span><span class="p">(</span><span class="n">n_layers</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;sigmoid&#39;</span><span class="p">):</span>
+    <span class="n">gradient</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="n">gradients</span> <span class="o">=</span> <span class="p">[</span><span class="n">gradient</span><span class="p">]</span>
+    
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_layers</span><span class="p">):</span>
+        <span class="n">weight</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">()</span> <span class="o">*</span> <span class="mf">0.5</span>
+        <span class="c1"># Sigmoid ma pochodną max 0.25</span>
+        <span class="n">activation_deriv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">)</span>
+        <span class="n">gradient</span> <span class="o">*=</span> <span class="n">weight</span> <span class="o">*</span> <span class="n">activation_deriv</span>
+        <span class="n">gradients</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">gradient</span><span class="p">))</span>
+    
+    <span class="k">return</span> <span class="n">gradients</span>
+
+<span class="c1"># Porównanie sigmoid vs ReLU</span>
+<span class="n">grads_sigmoid</span> <span class="o">=</span> <span class="n">gradient_flow</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="s1">&#39;sigmoid&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">semilogy</span><span class="p">(</span><span class="n">grads_sigmoid</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Sigmoid&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Warstwa (od wyjścia do wejścia)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Wielkość gradientu (log)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Zanikający gradient w głębokich sieciach&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Gradient zanika eksponencjalnie!&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Rozwiązania:</strong></p>
+<ul class="simple">
+<li><p>ReLU i warianty (LeakyReLU, ELU)</p></li>
+<li><p>Batch Normalization</p></li>
+<li><p>Skip Connections (ResNet)</p></li>
+<li><p>Lepsza inicjalizacja wag (Xavier, He)</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="overfitting-w-glebokich-sieciach">
+<h3>Overfitting w głębokich sieciach<a class="headerlink" href="#overfitting-w-glebokich-sieciach" title="Link to this heading">#</a></h3>
+<p><strong>Overfitting:</strong> Model “zapamiętuje” dane treningowe zamiast uczyć się ogólnych wzorców.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Demonstracja overfittingu</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+
+<span class="c1"># Dane z szumem</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+
+<span class="c1"># Duża sieć bez regularyzacji → overfit</span>
+<span class="c1"># vs sieć z dropout/L2 → dobra generalizacja</span>
+
+<span class="c1"># Wykres learning curves pokazuje różnicę między train a test loss</span>
+</pre></div>
+</div>
+<p><strong>Techniki zapobiegania:</strong></p>
+<ul class="simple">
+<li><p><strong>Dropout</strong> - losowe wyłączanie neuronów</p></li>
+<li><p><strong>L1/L2 Regularization</strong> - karanie dużych wag</p></li>
+<li><p><strong>Early stopping</strong> - zatrzymanie gdy test loss przestaje maleć</p></li>
+<li><p><strong>Data augmentation</strong> - zwiększanie zbioru treningowego</p></li>
+<li><p><strong>Batch Normalization</strong> - efekt regularyzacyjny</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="ograniczenia-w-modelowaniu-dlugoterminowych-zaleznosci">
+<h3>Ograniczenia w modelowaniu długoterminowych zależności<a class="headerlink" href="#ograniczenia-w-modelowaniu-dlugoterminowych-zaleznosci" title="Link to this heading">#</a></h3>
+<p>Klasyczne RNN miały problemy z “zapamiętywaniem” informacji z odległej przeszłości w sekwencjach.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Problem vanilla RNN: informacja zanika po kilkunastu krokach</span>
+<span class="k">class</span> <span class="nc">SimpleRNN</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">forward_sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sequence</span><span class="p">):</span>
+        <span class="n">hidden</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">sequence</span><span class="p">:</span>
+            <span class="n">hidden</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tanh</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">W_hh</span><span class="p">,</span> <span class="n">hidden</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">W_xh</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">hidden</span>
+
+<span class="c1"># Po 20-30 krokach czasowych, pierwotna informacja praktycznie znika</span>
+</pre></div>
+</div>
+<p><strong>Rozwiązania:</strong></p>
+<ul class="simple">
+<li><p>LSTM (Long Short-Term Memory)</p></li>
+<li><p>GRU (Gated Recurrent Unit)</p></li>
+<li><p><strong>Attention Mechanism</strong> - bezpośredni dostęp do wcześniejszych stanów</p></li>
+<li><p><strong>Transformers</strong> - self-attention zamiast rekurencji</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="koszty-obliczeniowe">
+<h3>Koszty obliczeniowe<a class="headerlink" href="#koszty-obliczeniowe" title="Link to this heading">#</a></h3>
+<p>Trenowanie dużych modeli wymaga ogromnych zasobów.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Porównanie rozmiarów modeli</span>
+<span class="n">models</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;AlexNet</span><span class="se">\n</span><span class="s1">2012&#39;</span><span class="p">,</span> <span class="s1">&#39;GPT-2</span><span class="se">\n</span><span class="s1">2019&#39;</span><span class="p">,</span> <span class="s1">&#39;GPT-3</span><span class="se">\n</span><span class="s1">2020&#39;</span><span class="p">,</span> <span class="s1">&#39;GPT-4</span><span class="se">\n</span><span class="s1">2023&#39;</span><span class="p">]</span>
+<span class="n">params</span> <span class="o">=</span> <span class="p">[</span><span class="mi">60</span><span class="p">,</span> <span class="mi">1500</span><span class="p">,</span> <span class="mi">175000</span><span class="p">,</span> <span class="mi">1760000</span><span class="p">]</span>  <span class="c1"># Miliony parametrów</span>
+<span class="n">costs</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">43</span><span class="p">,</span> <span class="mi">4600</span><span class="p">,</span> <span class="mi">100000</span><span class="p">]</span>  <span class="c1"># Tysiące USD</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">models</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;skyblue&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Parametry (miliony)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Wzrost rozmiaru modeli&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">models</span><span class="p">,</span> <span class="n">costs</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;lightcoral&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Koszt treningu (tyś. USD)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Wzrost kosztów&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><strong>Implikacje:</strong></p>
+<ul class="simple">
+<li><p>Bariery wejścia dla małych graczy</p></li>
+<li><p>Koszty środowiskowe (CO2)</p></li>
+<li><p>Potrzeba efektywniejszych architektur</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="przelomowe-innowacje-techniczne">
+<h2>1.3 Przełomowe innowacje techniczne<a class="headerlink" href="#przelomowe-innowacje-techniczne" title="Link to this heading">#</a></h2>
+<section id="dropout">
+<h3>Dropout<a class="headerlink" href="#dropout" title="Link to this heading">#</a></h3>
+<p><strong>Dropout</strong> (Hinton, 2012) - losowe wyłączanie neuronów podczas treningu.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Dropout w praktyce</span>
+<span class="k">class</span> <span class="nc">DropoutLayer</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dropout_rate</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rate</span> <span class="o">=</span> <span class="n">dropout_rate</span>
+    
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">training</span><span class="p">:</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">binomial</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">rate</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="n">mask</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">rate</span><span class="p">)</span>  <span class="c1"># Scaling</span>
+        <span class="k">return</span> <span class="n">x</span>  <span class="c1"># Bez dropout w inference</span>
+</pre></div>
+</div>
+<p><strong>Dlaczego działa:</strong></p>
+<ul class="simple">
+<li><p>Ensemble effect - trenujemy wiele “podsieci”</p></li>
+<li><p>Zmusza do robustności</p></li>
+<li><p>Redukuje ko-adaptację neuronów</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="batch-normalization">
+<h3>Batch Normalization<a class="headerlink" href="#batch-normalization" title="Link to this heading">#</a></h3>
+<p><strong>Batch Normalization</strong> (2015) - normalizuje aktywacje w każdej warstwie.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Batch Normalization</span>
+<span class="k">class</span> <span class="nc">BatchNorm</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">training</span><span class="p">:</span>
+            <span class="n">mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">var</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">x_norm</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">mean</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">var</span> <span class="o">+</span> <span class="mf">1e-5</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">x_norm</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">running_mean</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">running_var</span> <span class="o">+</span> <span class="mf">1e-5</span><span class="p">)</span>
+        
+        <span class="c1"># Scale and shift (learnable)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">gamma</span> <span class="o">*</span> <span class="n">x_norm</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">beta</span>
+</pre></div>
+</div>
+<p><strong>Zalety:</strong></p>
+<ul class="simple">
+<li><p>Przyspiesza trening (wyższy learning rate)</p></li>
+<li><p>Stabilizuje trening</p></li>
+<li><p>Efekt regularyzacyjny</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="skip-connections-i-residual-learning">
+<h3>Skip Connections i Residual Learning<a class="headerlink" href="#skip-connections-i-residual-learning" title="Link to this heading">#</a></h3>
+<p><strong>Skip Connections</strong> (ResNet, 2015) - bezpośrednie połączenia między warstwami.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Residual block</span>
+<span class="k">class</span> <span class="nc">ResidualBlock</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">identity</span> <span class="o">=</span> <span class="n">x</span>  <span class="c1"># Skip connection</span>
+        
+        <span class="c1"># F(x) - funkcja uczona przez warstwy</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">conv1</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">relu</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">conv2</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+        
+        <span class="c1"># Dodanie skip connection</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">out</span> <span class="o">+</span> <span class="n">identity</span>  <span class="c1"># y = F(x) + x</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">relu</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">out</span>
+</pre></div>
+</div>
+<p><strong>Dlaczego działa:</strong></p>
+<ul class="simple">
+<li><p>Gradient flow przez skip connections</p></li>
+<li><p>Łatwo nauczyć się identity mapping (F=0)</p></li>
+<li><p>Umożliwił sieci 100+ warstw</p></li>
+</ul>
+<p><strong>Przełom:</strong> ResNet wygrał ImageNet 2015 z błędem 3.6%</p>
+</section>
+<hr class="docutils" />
+<section id="attention-mechanism">
+<h3>Attention Mechanism<a class="headerlink" href="#attention-mechanism" title="Link to this heading">#</a></h3>
+<p><strong>Attention</strong> (2014) - model sam decyduje, na które części wejścia patrzeć.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Uproszczony attention</span>
+<span class="k">def</span> <span class="nf">attention</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">keys</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+    <span class="c1"># 1. Oblicz similarity (Query · Key)</span>
+    <span class="n">scores</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">keys</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">keys</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    
+    <span class="c1"># 2. Softmax → rozkład prawdopodobieństwa</span>
+    <span class="n">weights</span> <span class="o">=</span> <span class="n">softmax</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span>
+    
+    <span class="c1"># 3. Ważona suma Values</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">output</span><span class="p">,</span> <span class="n">weights</span>
+</pre></div>
+</div>
+<p><strong>Zalety:</strong></p>
+<ul class="simple">
+<li><p>Długie zależności bez problemu</p></li>
+<li><p>Przetwarzanie równoległe (vs RNN)</p></li>
+<li><p>Interpretowalność (widzimy wagi uwagi)</p></li>
+<li><p>Fundament Transformerów (GPT, BERT, etc.)</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="transfer-learning">
+<h3>Transfer Learning<a class="headerlink" href="#transfer-learning" title="Link to this heading">#</a></h3>
+<p><strong>Transfer Learning</strong> - wykorzystanie wiedzy z jednego problemu do rozwiązania innego.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Transfer learning w praktyce</span>
+<span class="c1"># 1. Załaduj pre-trained model (np. ResNet na ImageNet)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">load_pretrained_model</span><span class="p">(</span><span class="s1">&#39;resnet50&#39;</span><span class="p">)</span>
+
+<span class="c1"># 2. Zamroź wczesne warstwy</span>
+<span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">layers</span><span class="p">[:</span><span class="o">-</span><span class="mi">5</span><span class="p">]:</span>
+    <span class="n">layer</span><span class="o">.</span><span class="n">trainable</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="c1"># 3. Dodaj nowy classifier dla twojego zadania</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="n">num_classes</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;softmax&#39;</span><span class="p">))</span>
+
+<span class="c1"># 4. Fine-tune na twoich danych</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">your_data</span><span class="p">,</span> <span class="n">your_labels</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Zalety:</strong></p>
+<ul class="simple">
+<li><p>Mniej danych potrzebnych</p></li>
+<li><p>Szybszy trening</p></li>
+<li><p>Lepsza wydajność</p></li>
+<li><p>Demokratyzacja AI</p></li>
+</ul>
+<p><strong>Strategie:</strong></p>
+<ul class="simple">
+<li><p>Feature extraction (frozen weights)</p></li>
+<li><p>Fine-tuning (aktualizacja wszystkich/niektórych warstw)</p></li>
+<li><p>Progressive fine-tuning</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="dlaczego-potrzebujemy-nowych-architektur">
+<h2>1.4 Dlaczego potrzebujemy nowych architektur<a class="headerlink" href="#dlaczego-potrzebujemy-nowych-architektur" title="Link to this heading">#</a></h2>
+<section id="nowe-dziedziny-zastosowan">
+<h3>Nowe dziedziny zastosowań<a class="headerlink" href="#nowe-dziedziny-zastosowan" title="Link to this heading">#</a></h3>
+<p><strong>Medycyna:</strong></p>
+<ul class="simple">
+<li><p>Diagnostyka obrazowa (CT, MRI)</p></li>
+<li><p>Odkrywanie leków</p></li>
+<li><p>Wymaga: interpretability, uncertainty estimation</p></li>
+</ul>
+<p><strong>Autonomous Vehicles:</strong></p>
+<ul class="simple">
+<li><p>Percepcja otoczenia w czasie rzeczywistym</p></li>
+<li><p>Wymaga: real-time, high reliability</p></li>
+</ul>
+<p><strong>Edge &amp; Mobile:</strong></p>
+<ul class="simple">
+<li><p>Smartfony, IoT, wearables</p></li>
+<li><p>Wymaga: extreme efficiency, low latency</p></li>
+</ul>
+<p><strong>Multimodal AI:</strong></p>
+<ul class="simple">
+<li><p>Vision + Language + Audio</p></li>
+<li><p>Wymaga: unified architectures</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="rosnace-wymagania">
+<h3>Rosnące wymagania<a class="headerlink" href="#rosnace-wymagania" title="Link to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Trendy w wymaganiach (2015 = baseline)</span>
+<span class="n">years</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">2015</span><span class="p">,</span> <span class="mi">2026</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">years</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">((</span><span class="n">years</span><span class="o">-</span><span class="mi">2015</span><span class="p">)</span><span class="o">*</span><span class="mf">0.3</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Rozmiar danych&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">years</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">((</span><span class="n">years</span><span class="o">-</span><span class="mi">2015</span><span class="p">)</span><span class="o">*</span><span class="mf">0.25</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Złożoność zadań&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">years</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">((</span><span class="n">years</span><span class="o">-</span><span class="mi">2015</span><span class="p">)</span><span class="o">*</span><span class="mf">0.2</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Real-time requirements&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Rok&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Wzrost względem 2015&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Rosnące wymagania dla architektur AI&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="kierunki-rozwoju">
+<h3>Kierunki rozwoju<a class="headerlink" href="#kierunki-rozwoju" title="Link to this heading">#</a></h3>
+<p><strong>Efficiency &amp; Scale:</strong></p>
+<ul class="simple">
+<li><p>Sparse models (Mixture of Experts)</p></li>
+<li><p>Quantization, pruning</p></li>
+<li><p>Neural Architecture Search</p></li>
+</ul>
+<p><strong>Better Learning:</strong></p>
+<ul class="simple">
+<li><p>Few-shot, zero-shot learning</p></li>
+<li><p>Self-supervised learning</p></li>
+<li><p>Continual learning</p></li>
+</ul>
+<p><strong>New Paradigms:</strong></p>
+<ul class="simple">
+<li><p>State Space Models (Mamba, S4)</p></li>
+<li><p>Graph Neural Networks</p></li>
+<li><p>Geometric Deep Learning</p></li>
+</ul>
+<p><strong>Interpretability &amp; Trust:</strong></p>
+<ul class="simple">
+<li><p>Explainable AI (XAI)</p></li>
+<li><p>Uncertainty quantification</p></li>
+<li><p>Fairness &amp; robustness</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="podsumowanie-modulu-1">
+<h2>Podsumowanie Modułu 1<a class="headerlink" href="#podsumowanie-modulu-1" title="Link to this heading">#</a></h2>
+<section id="kluczowe-punkty-historyczne">
+<h3>Kluczowe punkty historyczne:<a class="headerlink" href="#kluczowe-punkty-historyczne" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Perceptron (1958)</strong> - początek, ograniczony do problemów liniowych</p></li>
+<li><p><strong>Backpropagation (1986)</strong> - umożliwił wielowarstwowe sieci</p></li>
+<li><p><strong>AlexNet (2012)</strong> - przełom deep learning</p></li>
+<li><p><strong>ResNet (2015)</strong> - skip connections, sieci 100+ warstw</p></li>
+</ul>
+</section>
+<section id="glowne-problemy-i-rozwiazania">
+<h3>Główne problemy i rozwiązania:<a class="headerlink" href="#glowne-problemy-i-rozwiazania" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Problem</p></th>
+<th class="head"><p>Rozwiązanie</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Zanikający gradient</p></td>
+<td><p>ReLU, Batch Norm, Skip Connections</p></td>
+</tr>
+<tr class="row-odd"><td><p>Overfitting</p></td>
+<td><p>Dropout, regularyzacja, augmentacja</p></td>
+</tr>
+<tr class="row-even"><td><p>Długie zależności</p></td>
+<td><p>LSTM, GRU, Attention, Transformers</p></td>
+</tr>
+<tr class="row-odd"><td><p>Koszty obliczeniowe</p></td>
+<td><p>Efektywne architektury, transfer learning</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="przelomowe-innowacje">
+<h3>Przełomowe innowacje:<a class="headerlink" href="#przelomowe-innowacje" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>✅ <strong>Dropout</strong> - regularyzacja przez losowe wyłączanie</p></li>
+<li><p>✅ <strong>Batch Normalization</strong> - stabilizacja treningu</p></li>
+<li><p>✅ <strong>Skip Connections</strong> - głębokie sieci (ResNet)</p></li>
+<li><p>✅ <strong>Attention</strong> - fundament Transformerów</p></li>
+<li><p>✅ <strong>Transfer Learning</strong> - demokratyzacja AI</p></li>
+</ul>
+</section>
+<section id="wspolczesne-wyzwania">
+<h3>Współczesne wyzwania:<a class="headerlink" href="#wspolczesne-wyzwania" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Efektywność (edge computing)</p></li>
+<li><p>Multimodalność</p></li>
+<li><p>Długie konteksty</p></li>
+<li><p>Interpretability</p></li>
+<li><p>Zrównoważony rozwój (Green AI)</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="co-dalej">
+<h2>Co dalej?<a class="headerlink" href="#co-dalej" title="Link to this heading">#</a></h2>
+<p>W <strong>Modułu 2</strong> zagłębimy się w konkretne rodziny architektur:</p>
+<ul class="simple">
+<li><p>Sieci konwolucyjne (CNN → ResNet → EfficientNet → ConvNeXt)</p></li>
+<li><p>Transformery i mechanizmy uwagi (ViT, BERT, GPT)</p></li>
+<li><p>Architektury rekurencyjne i ich następcy</p></li>
+<li><p>Podejścia hybrydowe</p></li>
+</ul>
+<p>Każda z tych rodzin rozwiązuje inne problemy i ma swoje zastosowania!</p>
+<hr class="docutils" />
+<p><strong>Pytania do przemyślenia:</strong></p>
+<ol class="arabic simple">
+<li><p>Które z przedstawionych innowacji uważasz za najbardziej przełomowe?</p></li>
+<li><p>Jakie nowe problemy mogą wymagać kolejnych przełomów?</p></li>
+<li><p>Dokąd zmierza rozwój architektur w następnej dekadzie?</p></li>
+</ol>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./glebokie_ml"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="rozdzial_18_Sieci_GAN.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Sieci GAN</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="rozdzial_20_Transformery.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Transformery</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#podstawy-i-ewolucja-architektur-neuronowych-czesc-1">Podstawy i ewolucja architektur neuronowych. Część 1</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spis-tresci">Spis treści</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#wprowadzenie">Wprowadzenie</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#historia-rozwoju-sieci-neuronowych">1.1 Historia rozwoju sieci neuronowych</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#perceptron-1958-poczatek-ery">Perceptron (1958) - Początek ery</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#zima-ai-i-przelom-lat-80">Zima AI i przełom lat 80.</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wsteczna-propagacja-bledu">Wsteczna propagacja błędu</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#glebokie-sieci-neuronowe-2006-2012">Głębokie sieci neuronowe (2006-2012)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#era-imagenet-i-przelom-2012-roku">Era ImageNet i przełom 2012 roku</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#kluczowe-problemy-klasycznych-architektur">1.2 Kluczowe problemy klasycznych architektur</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#problem-zanikajacego-eksplodujacego-gradientu">Problem zanikającego/eksplodującego gradientu</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#overfitting-w-glebokich-sieciach">Overfitting w głębokich sieciach</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ograniczenia-w-modelowaniu-dlugoterminowych-zaleznosci">Ograniczenia w modelowaniu długoterminowych zależności</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#koszty-obliczeniowe">Koszty obliczeniowe</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#przelomowe-innowacje-techniczne">1.3 Przełomowe innowacje techniczne</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dropout">Dropout</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#batch-normalization">Batch Normalization</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#skip-connections-i-residual-learning">Skip Connections i Residual Learning</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#attention-mechanism">Attention Mechanism</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#transfer-learning">Transfer Learning</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dlaczego-potrzebujemy-nowych-architektur">1.4 Dlaczego potrzebujemy nowych architektur</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nowe-dziedziny-zastosowan">Nowe dziedziny zastosowań</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rosnace-wymagania">Rosnące wymagania</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#kierunki-rozwoju">Kierunki rozwoju</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#podsumowanie-modulu-1">Podsumowanie Modułu 1</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#kluczowe-punkty-historyczne">Kluczowe punkty historyczne:</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#glowne-problemy-i-rozwiazania">Główne problemy i rozwiązania:</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#przelomowe-innowacje">Przełomowe innowacje:</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wspolczesne-wyzwania">Współczesne wyzwania:</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#co-dalej">Co dalej?</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Maciej Janowicz
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

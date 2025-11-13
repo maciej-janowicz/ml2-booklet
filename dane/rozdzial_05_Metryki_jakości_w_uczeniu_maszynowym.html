@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>Najważniejsze wskaźniki używane do oceny modeli regresyjnych. &#8212; My sample book</title>
+    <title>Metryki jakości w uczeniu maszynowym &#8212; Elementarne uczenie maszynowe</title>
   
   
   
@@ -62,8 +62,8 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'dane/rozdzial_05_Metryki_jakości_w_uczeniu_maszynowym';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="&lt;no title&gt;" href="rozdzial_06_In%C5%BCynieria_cech.html" />
-    <link rel="prev" title="&lt;no title&gt;" href="../podstawy/rozdzial_04_Wst%C4%99pne_przetwarzanie_danych.html" />
+    <link rel="next" title="Inżynieria cech" href="rozdzial_06_In%C5%BCynieria_cech.html" />
+    <link rel="prev" title="Wstępne przetwarzanie danych" href="../podstawy/rozdzial_04_Wst%C4%99pne_przetwarzanie_danych.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -102,8 +102,8 @@
          class="form-control"
          name="q"
          id="search-input"
-         placeholder="Search this book..."
-         aria-label="Search this book..."
+         placeholder="Search..."
+         aria-label="Search..."
          autocomplete="off"
          autocorrect="off"
          autocapitalize="off"
@@ -150,14 +150,8 @@
   
   
   
-    
-    
-      
-    
-    
-    <img src="../_static/logo.png" class="logo__image only-light" alt="My sample book - Home"/>
-    <script>document.write(`<img src="../_static/logo.png" class="logo__image only-dark" alt="My sample book - Home"/>`);</script>
   
+    <p class="title logo__title">Elementarne uczenie maszynowe</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -173,44 +167,29 @@
  </script></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
-        
-        <ul class="nav bd-sidenav bd-sidenav__home-link">
-            <li class="toctree-l1">
-                <a class="reference internal" href="../intro.html">
-                    Welcome to your Jupyter Book
-                </a>
-            </li>
-        </ul>
         <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../podstawy/rozdzial_01_Wst%C4%99p_do_uczenia_maszynowego.html">Wstęp do uczenia maszynowego</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../podstawy/rozdzial_02_Rodzaje_uczenia_maszynowego.html">Rodzaje uczenia maszynowego</a></li>
-
 <li class="toctree-l1"><a class="reference internal" href="../podstawy/rozdzial_03_Matematyka_w_uczeniu_maszynowym.html">Matematyka w uczeniu maszynowym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../podstawy/rozdzial_04_Wst%C4%99pne_przetwarzanie_danych.html">Wstępne przetwarzanie danych</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Metryki jakości</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rozdzial_06_In%C5%BCynieria_cech.html">Inżynieria cech</a></li>
+
 <li class="toctree-l1"><a class="reference internal" href="../biblioteki/rozdzial_07_TensorFlow.html">Biblioteka TensorFlow</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../klasyczne_ml/rozdzial_09_Uczenie_nadzorowane.html">Proste zadania klasyfikacji</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../biblioteki/rozdzial_08_PyTorch.html">Biblioteka Pytorch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../klasyczne_ml/rozdzial_09_Uczenie_nadzorowane.html">Uczenie nadzorowane</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../klasyczne_ml/rozdzial_10_Uczenie_nienadzorowane.html">Uczenie nienadzorowane</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../klasyczne_ml/rozdzial_11_Modele_liniowe_i_drzewiaste.html">Modele liniowe i drzewiaste</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../klasyczne_ml/rozdzial_13_Klasyfikacja_binarna_%C4%87wiczenia.html">Klasyfikacja binarna - ćwiczenia</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../walidacja/rozdzial_14_Walidacja_modeli.html">Walidacja modeli</a></li>
 
-<li class="toctree-l1"><a class="reference internal" href="../klasyczne_ml/rozdzial_10_Uczenie_nienadzorowane.html">Algorytm K-średnich (K-means)</a></li>
-
-
-
-
-
-
-<li class="toctree-l1"><a class="reference internal" href="../klasyczne_ml/rozdzial_11_Modele_liniowe_i_drzewiaste.html">Modele liniowe: regresja liniowa, regresja logistyczna</a></li>
-
-
-
-<li class="toctree-l1"><a class="reference internal" href="../g%C5%82%C4%99bokie_ml/rozdzial_15_Sieci_CNN.html">Sieci konwolucyjne</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../g%C5%82%C4%99bokie_ml/rozdzial_16_Sieci_RNN.html">Rekurencyjne sieci neuronowe (RNN) to rodzaj sieci neuronowych zaprojektowanych do przetwarzania sekwencji danych, takich jak tekst, dane czasowe czy sygnały.</a></li>
-
-<li class="toctree-l1"><a class="reference internal" href="../g%C5%82%C4%99bokie_ml/rozdzial_17_Sieci_LSTM.html">Sieci LSTM</a></li>
-
-
-<li class="toctree-l1"><a class="reference internal" href="../g%C5%82%C4%99bokie_ml/rozdzial_19_Architektury_sieci_neuronowych_1.html">Architektury sieci neuronowych, część 1</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../g%C5%82%C4%99bokie_ml/rozdzial_20_Transformery.html">Transformery</a></li>
-
-
-<li class="toctree-l1"><a class="reference internal" href="../ensembling/rozdzial_21_Ensembling.html">Metody zespołowe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glebokie_ml/rozdzial_15_Sieci_CNN.html">Sieci konwolucyjne</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glebokie_ml/rozdzial_16_Sieci_RNN.html">Sieci rekurencyjne</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glebokie_ml/rozdzial_17_Sieci_LSTM.html">Sieci LSTM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glebokie_ml/rozdzial_18_Sieci_GAN.html">Sieci GAN</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glebokie_ml/rozdzial_19_Architektury_sieci_neuronowych_1.html">Architektury sieci neuronowych, część 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glebokie_ml/rozdzial_20_Transformery.html">Wstęp do transformerów</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ensemble/rozdzial_21_Ensembling.html">Metody zespołowe</a></li>
 </ul>
 
     </div>
@@ -254,50 +233,18 @@
 <div class="article-header-buttons">
 
 
-
-
-
-<div class="dropdown dropdown-source-buttons">
-  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
-    <i class="fab fa-github"></i>
-  </button>
-  <ul class="dropdown-menu">
-      
-      
-      
-      <li><a href="https://github.com/executablebooks/jupyter-book" target="_blank"
-   class="btn btn-sm btn-source-repository-button dropdown-item"
+<a href="https://github.com/maciej-janowicz/ml-book" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
    title="Source repository"
-   data-bs-placement="left" data-bs-toggle="tooltip"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
 >
   
 
 <span class="btn__icon-container">
   <i class="fab fa-github"></i>
   </span>
-<span class="btn__text-container">Repository</span>
-</a>
-</li>
-      
-      
-      
-      
-      <li><a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2Fdane/rozdzial_05_Metryki_jakości_w_uczeniu_maszynowym.html&body=Your%20issue%20content%20here." target="_blank"
-   class="btn btn-sm btn-source-issues-button dropdown-item"
-   title="Open an issue"
-   data-bs-placement="left" data-bs-toggle="tooltip"
->
-  
 
-<span class="btn__icon-container">
-  <i class="fas fa-lightbulb"></i>
-  </span>
-<span class="btn__text-container">Open issue</span>
 </a>
-</li>
-      
-  </ul>
-</div>
 
 
 
@@ -383,7 +330,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -394,11 +343,20 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Najważniejsze wskaźniki używane do oceny modeli regresyjnych.</h1>
+    <h1>Metryki jakości w uczeniu maszynowym</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#proces-uczenia-maszynowego-i-oceny-modeli">Proces uczenia maszynowego i oceny modeli.</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#najwazniejsze-wskazniki-uzywane-do-oceny-modeli-regresyjnych">Najważniejsze wskaźniki używane do oceny modeli regresyjnych.</a></li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -408,7 +366,10 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <p>###Proces uczenia maszynowego i oceny modeli.</p>
+  <section class="tex2jax_ignore mathjax_ignore" id="metryki-jakosci-w-uczeniu-maszynowym">
+<h1>Metryki jakości w uczeniu maszynowym<a class="headerlink" href="#metryki-jakosci-w-uczeniu-maszynowym" title="Link to this heading">#</a></h1>
+<section id="proces-uczenia-maszynowego-i-oceny-modeli">
+<h2>Proces uczenia maszynowego i oceny modeli.<a class="headerlink" href="#proces-uczenia-maszynowego-i-oceny-modeli" title="Link to this heading">#</a></h2>
 <ol class="arabic simple">
 <li><p>Czynności wykonywane podczas uczenia algorytmu</p></li>
 </ol>
@@ -492,30 +453,39 @@ F1 = 2 * (Precyzja * Czułość) / (Precyzja + Czułość)</p></li>
 </ul>
 <p>F. Krzywa “lift”</p>
 <p>Krzywa “lift” jest to narzędzie wizualizacji, które pomaga ocenić skuteczność modelu predykcyjnego w porównaniu do losowego wyboru. Pokazuje ona, o ile lepiej model radzi sobie z identyfikacją pozytywnych przypadków w porównaniu do przypadkowego, losowego wyboru.</p>
-<p>F1. Definicja</p>
+<ol class="arabic simple">
+<li><p>Definicja</p></li>
+</ol>
 <ul class="simple">
 <li><p>“Lift” to stosunek między odsetkiem pozytywnych wyników w wybranej grupie a odsetkiem pozytywnych wyników w całej populacji.</p></li>
 </ul>
-<p>F2. Interpretacja</p>
+<ol class="arabic simple" start="2">
+<li><p>Interpretacja</p></li>
+</ol>
 <ul class="simple">
 <li><p>“Lift” = 1 oznacza, że model nie jest lepszy od losowego wyboru.</p></li>
 <li><p>“Lift” &gt; 1 wskazuje, że model działa lepiej niż losowy wybór.</p></li>
 <li><p>Im wyższa wartość “liftu”, tym lepszy model</p></li>
 </ul>
-<p>F3. Zastosowanie</p>
+<ol class="arabic simple" start="3">
+<li><p>Zastosowanie</p></li>
+</ol>
 <ul class="simple">
 <li><p>Marketing: optymalizacja kampanii reklamowych</p></li>
 <li><p>Sprzedaż: identyfikacja potencjalnych klientów</p></li>
 <li><p>Analiza ryzyka: wykrywanie fraudów</p></li>
 <li><p>Medycyna: przewidywanie ryzyka chorób</p></li>
 </ul>
-<p>F4. Przykład.
-Załóżmy, że bank chce zidentyfikować klientów, którzy najprawdopodobniej skorzystają z nowej oferty kredytowej. Średni współczynnik odpowiedzi w populacji wynosi 5%. Jeśli model wskazuje grupę, w której współczynnik odpowiedzi wynosi 15%, “lift” wynosi 3 (15%/5% = 3), co oznacza, że model jest trzy razy skuteczniejszy od losowego wyboru.</p>
+<ol class="arabic simple" start="4">
+<li><p>Przykład.
+Załóżmy, że bank chce zidentyfikować klientów, którzy najprawdopodobniej skorzystają z nowej oferty kredytowej. Średni współczynnik odpowiedzi w populacji wynosi 5%. Jeśli model wskazuje grupę, w której współczynnik odpowiedzi wynosi 15%, “lift” wynosi 3 (15%/5% = 3), co oznacza, że model jest trzy razy skuteczniejszy od losowego wyboru.</p></li>
+</ol>
 <p>Proces uczenia maszynowego jest iteracyjny - często trzeba wracać
 do wcześniejszych etapów i wprowadzać modyfikacje na podstawie uzyskanych wyników.
 Istotne jest zrozumienie tzw. “kontekstu biznesowego” (jak zawsze)</p>
+</section>
 <section id="najwazniejsze-wskazniki-uzywane-do-oceny-modeli-regresyjnych">
-<h1>Najważniejsze wskaźniki używane do oceny modeli regresyjnych.<a class="headerlink" href="#najwazniejsze-wskazniki-uzywane-do-oceny-modeli-regresyjnych" title="Link to this heading">#</a></h1>
+<h2>Najważniejsze wskaźniki używane do oceny modeli regresyjnych.<a class="headerlink" href="#najwazniejsze-wskazniki-uzywane-do-oceny-modeli-regresyjnych" title="Link to this heading">#</a></h2>
 <ol class="arabic simple">
 <li><p>“Mean Squared Error (MSE)” - błąd średni kwadratowy:</p></li>
 </ol>
@@ -580,6 +550,7 @@ Istotne jest zrozumienie tzw. “kontekstu biznesowego” (jak zawsze)</p>
 <li><p>Pomocny w wykrywaniu błędów systematycznych</p></li>
 </ul>
 </section>
+</section>
 
     <script type="text/x-thebe-config">
     {
@@ -617,7 +588,7 @@ Istotne jest zrozumienie tzw. “kontekstu biznesowego” (jak zawsze)</p>
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">&lt;no title&gt;</p>
+        <p class="prev-next-title">Wstępne przetwarzanie danych</p>
       </div>
     </a>
     <a class="right-next"
@@ -625,7 +596,7 @@ Istotne jest zrozumienie tzw. “kontekstu biznesowego” (jak zawsze)</p>
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">&lt;no title&gt;</p>
+        <p class="prev-next-title">Inżynieria cech</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -636,6 +607,22 @@ Istotne jest zrozumienie tzw. “kontekstu biznesowego” (jak zawsze)</p>
             
             
               
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#proces-uczenia-maszynowego-i-oceny-modeli">Proces uczenia maszynowego i oceny modeli.</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#najwazniejsze-wskazniki-uzywane-do-oceny-modeli-regresyjnych">Najważniejsze wskaźniki używane do oceny modeli regresyjnych.</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
             
           </div>
           <footer class="bd-footer-content">
@@ -645,7 +632,7 @@ Istotne jest zrozumienie tzw. “kontekstu biznesowego” (jak zawsze)</p>
   <div class="footer-item">
     
 <p class="component-author">
-By The Jupyter Book Community
+By Maciej Janowicz
 </p>
 
   </div>

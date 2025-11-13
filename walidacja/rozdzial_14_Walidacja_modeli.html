@@ -62,7 +62,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'walidacja/rozdzial_14_Walidacja_modeli';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Sieci CNN" href="../g%C5%82%C4%99bokie_ml/rozdzial_15_Sieci_CNN.html" />
+    <link rel="next" title="Sieci CNN" href="../glebokie_ml/rozdzial_15_Sieci_CNN.html" />
     <link rel="prev" title="Klasyfikacja binarna - ćwiczenia" href="../klasyczne_ml/rozdzial_13_Klasyfikacja_binarna_%C4%87wiczenia.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -150,14 +150,8 @@
   
   
   
-    
-    
-      
-    
-    
-    <img src="../_static/logo.png" class="logo__image only-light" alt="Elementarne uczenie maszynowe - Home"/>
-    <script>document.write(`<img src="../_static/logo.png" class="logo__image only-dark" alt="Elementarne uczenie maszynowe - Home"/>`);</script>
   
+    <p class="title logo__title">Elementarne uczenie maszynowe</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -178,6 +172,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../podstawy/rozdzial_02_Rodzaje_uczenia_maszynowego.html">Rodzaje uczenia maszynowego</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../podstawy/rozdzial_03_Matematyka_w_uczeniu_maszynowym.html">Matematyka w uczeniu maszynowym</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../podstawy/rozdzial_04_Wst%C4%99pne_przetwarzanie_danych.html">Wstępne przetwarzanie danych</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dane/rozdzial_05_Metryki_jako%C5%9Bci_w_uczeniu_maszynowym.html">Metryki jakości</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dane/rozdzial_06_In%C5%BCynieria_cech.html">Inżynieria cech</a></li>
+
 <li class="toctree-l1"><a class="reference internal" href="../biblioteki/rozdzial_07_TensorFlow.html">Biblioteka TensorFlow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../biblioteki/rozdzial_08_PyTorch.html">Biblioteka Pytorch</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../klasyczne_ml/rozdzial_09_Uczenie_nadzorowane.html">Uczenie nadzorowane</a></li>
@@ -186,13 +183,13 @@
 <li class="toctree-l1"><a class="reference internal" href="../klasyczne_ml/rozdzial_13_Klasyfikacja_binarna_%C4%87wiczenia.html">Klasyfikacja binarna - ćwiczenia</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Walidacja modeli</a></li>
 
-<li class="toctree-l1"><a class="reference internal" href="../g%C5%82%C4%99bokie_ml/rozdzial_15_Sieci_CNN.html">Sieci konwolucyjne</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../g%C5%82%C4%99bokie_ml/rozdzial_16_Sieci_RNN.html">Sieci rekurencyjne</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../g%C5%82%C4%99bokie_ml/rozdzial_17_Sieci_LSTM.html">Sieci LSTM</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../g%C5%82%C4%99bokie_ml/rozdzial_18_Sieci_GAN.html">Sieci GAN</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../g%C5%82%C4%99bokie_ml/rozdzial_19_Architektury_sieci_neuronowych_1.html">Architektury sieci neuronowych, część 1</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../g%C5%82%C4%99bokie_ml/rozdzial_20_Transformery.html">Wstęp do transformerów</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../ensembling/rozdzial_21_Ensembling.html">Metody zespołowe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glebokie_ml/rozdzial_15_Sieci_CNN.html">Sieci konwolucyjne</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glebokie_ml/rozdzial_16_Sieci_RNN.html">Sieci rekurencyjne</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glebokie_ml/rozdzial_17_Sieci_LSTM.html">Sieci LSTM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glebokie_ml/rozdzial_18_Sieci_GAN.html">Sieci GAN</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glebokie_ml/rozdzial_19_Architektury_sieci_neuronowych_1.html">Architektury sieci neuronowych, część 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glebokie_ml/rozdzial_20_Transformery.html">Wstęp do transformerów</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ensemble/rozdzial_21_Ensembling.html">Metody zespołowe</a></li>
 </ul>
 
     </div>
@@ -642,7 +639,7 @@ Traceback (most recent call last):  File &quot;&lt;frozen runpy&gt;&quot;, line 
     if await self.run_code(code, result, async_=asy):
   File &quot;/home/maciej/anaconda3/lib/python3.12/site-packages/IPython/core/interactiveshell.py&quot;, line 3577, in run_code
     exec(code_obj, self.user_global_ns, self.user_ns)
-  File &quot;/tmp/ipykernel_16874/3825973002.py&quot;, line 2, in &lt;module&gt;
+  File &quot;/tmp/ipykernel_11459/3825973002.py&quot;, line 2, in &lt;module&gt;
     import matplotlib.pyplot as plt
   File &quot;/home/maciej/anaconda3/lib/python3.12/site-packages/matplotlib/__init__.py&quot;, line 159, in &lt;module&gt;
     from . import _api, _version, cbook, _docstring, rcsetup
@@ -1273,7 +1270,7 @@ Rozkład próbek w klastrach:
       </div>
     </a>
     <a class="right-next"
-       href="../g%C5%82%C4%99bokie_ml/rozdzial_15_Sieci_CNN.html"
+       href="../glebokie_ml/rozdzial_15_Sieci_CNN.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>

@@ -1,0 +1,391 @@
+Traceback (most recent call last):
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/jupyter_cache/executors/utils.py", line 58, in single_nb_execution
+    executenb(
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/nbclient/client.py", line 1305, in execute
+    return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/jupyter_core/utils/__init__.py", line 165, in wrapped
+    return loop.run_until_complete(inner)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/maciej/anaconda3/lib/python3.12/asyncio/base_events.py", line 685, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/nbclient/client.py", line 705, in async_execute
+    await self.async_execute_cell(
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/nbclient/client.py", line 1058, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/nbclient/client.py", line 914, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.datasets import make_classification
+from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.svm import SVC
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.naive_bayes import GaussianNB
+
+# Metody ensemble
+from sklearn.ensemble import (
+    BaggingClassifier,
+    RandomForestClassifier,
+    AdaBoostClassifier,
+    GradientBoostingClassifier,
+    VotingClassifier,
+    StackingClassifier
+)
+
+import warnings
+warnings.filterwarnings('ignore')
+
+# Generowanie danych
+print("="*70)
+print("ENSEMBLING DLA KLASYFIKACJI")
+print("="*70)
+
+np.random.seed(42)
+X, y = make_classification(
+    n_samples=2000,
+    n_features=20,
+    n_informative=15,
+    n_redundant=5,
+    n_classes=3,
+    n_clusters_per_class=2,
+    weights=[0.3, 0.3, 0.4],
+    random_state=42
+)
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+print(f"\nRozmiar zbioru treningowego: {X_train.shape}")
+print(f"Rozmiar zbioru testowego: {X_test.shape}")
+print(f"Liczba klas: {len(np.unique(y))}")
+print(f"Rozkład klas w zbiorze treningowym: {np.bincount(y_train)}")
+
+# ============================================================================
+# SEKCJA 1: POJEDYNCZE MODELE BAZOWE
+# ============================================================================
+print("\n" + "="*70)
+print("SEKCJA 1: POJEDYNCZE MODELE BAZOWE")
+print("="*70)
+
+base_models = {
+    'Drzewo decyzyjne': DecisionTreeClassifier(max_depth=10, random_state=42),
+    'Regresja logistyczna': LogisticRegression(max_iter=1000, random_state=42),
+    'SVM': SVC(kernel='rbf', probability=True, random_state=42),
+    'KNN': KNeighborsClassifier(n_neighbors=5),
+    'Naive Bayes': GaussianNB()
+}
+
+base_results = {}
+
+for name, model in base_models.items():
+    scores = cross_val_score(model, X_train, y_train, cv=5, scoring='accuracy')
+    base_results[name] = {
+        'mean': scores.mean(),
+        'std': scores.std()
+    }
+    print(f"\n{name}:")
+    print(f"  CV Accuracy: {scores.mean():.4f} (+/- {scores.std():.4f})")
+
+# ============================================================================
+# SEKCJA 2: BAGGING
+# ============================================================================
+print("\n" + "="*70)
+print("SEKCJA 2: BAGGING - REDUKCJA WARIANCJI")
+print("="*70)
+
+# Bagging z Decision Tree
+bagging_dt = BaggingClassifier(
+    estimator=DecisionTreeClassifier(max_depth=10, random_state=42),
+    n_estimators=50,
+    max_samples=0.8,
+    max_features=0.8,
+    bootstrap=True,
+    random_state=42
+)
+
+scores_bagging = cross_val_score(bagging_dt, X_train, y_train, cv=5, scoring='accuracy')
+print(f"\nBagging (drzewo decyzyjne, n=50):")
+print(f"  CV Accuracy: {scores_bagging.mean():.4f} (+/- {scores_bagging.std():.4f})")
+print(f"  Poprawa vs pojedyncze drzewo: {scores_bagging.mean() - base_results['Drzewo decyzyjne']['mean']:.4f}")
+
+# Random Forest (specjalizowana wersja baggingu)
+rf = RandomForestClassifier(
+    n_estimators=100,
+    max_depth=10,
+    max_features='sqrt',
+    random_state=42
+)
+
+scores_rf = cross_val_score(rf, X_train, y_train, cv=5, scoring='accuracy')
+print(f"\nRandom Forest (n=100):")
+print(f"  CV Accuracy: {scores_rf.mean():.4f} (+/- {scores_rf.std():.4f})")
+
+# Analiza wpływu liczby estimatorów
+print("\nAnaliza wpływu liczby drzew w Random Forest:")
+n_estimators_range = [10, 25, 50, 100, 200]
+rf_scores_by_n = []
+
+for n in n_estimators_range:
+    rf_temp = RandomForestClassifier(
+        n_estimators=n,
+        max_depth=10,
+        random_state=42
+    )
+    scores = cross_val_score(rf_temp, X_train, y_train, cv=5, scoring='accuracy')
+    rf_scores_by_n.append(scores.mean())
+    print(f"  n={n:3d}: {scores.mean():.4f}")
+
+plt.figure(figsize=(10, 6))
+plt.plot(n_estimators_range, rf_scores_by_n, 'bo-', linewidth=2, markersize=8)
+plt.xlabel('Liczba drzew')
+plt.ylabel('CV Accuracy')
+plt.title('Wpływ liczby drzew na wydajność Random Forest')
+plt.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.show()
+
+# ============================================================================
+# SEKCJA 3: BOOSTING
+# ============================================================================
+print("\n" + "="*70)
+print("SEKCJA 3: BOOSTING - REDUKCJA BIAS I WARIANCJI")
+print("="*70)
+
+# AdaBoost
+adaboost = AdaBoostClassifier(
+    estimator=DecisionTreeClassifier(max_depth=3),
+    n_estimators=100,
+    learning_rate=1.0,
+    random_state=42
+)
+
+scores_ada = cross_val_score(adaboost, X_train, y_train, cv=5, scoring='accuracy')
+print(f"\nAdaBoost (n=100, lr=1.0):")
+print(f"  CV Accuracy: {scores_ada.mean():.4f} (+/- {scores_ada.std():.4f})")
+
+# Gradient Boosting
+gb = GradientBoostingClassifier(
+    n_estimators=100,
+    learning_rate=0.1,
+    max_depth=3,
+    random_state=42
+)
+
+scores_gb = cross_val_score(gb, X_train, y_train, cv=5, scoring='accuracy')
+print(f"\nGradient Boosting (n=100, lr=0.1):")
+print(f"  CV Accuracy: {scores_gb.mean():.4f} (+/- {scores_gb.std():.4f})")
+
+# Analiza wpływu learning rate
+print("\nAnaliza wpływu learning rate w Gradient Boosting:")
+learning_rates = [0.01, 0.05, 0.1, 0.3, 0.5, 1.0]
+gb_scores_by_lr = []
+
+for lr in learning_rates:
+    gb_temp = GradientBoostingClassifier(
+        n_estimators=100,
+        learning_rate=lr,
+        max_depth=3,
+        random_state=42
+    )
+    scores = cross_val_score(gb_temp, X_train, y_train, cv=5, scoring='accuracy')
+    gb_scores_by_lr.append(scores.mean())
+    print(f"  lr={lr:.2f}: {scores.mean():.4f}")
+
+plt.figure(figsize=(10, 6))
+plt.semilogx(learning_rates, gb_scores_by_lr, 'go-', linewidth=2, markersize=8)
+plt.xlabel('Learning Rate')
+plt.ylabel('CV Accuracy')
+plt.title('Wpływ learning rate na wydajność Gradient Boosting')
+plt.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.show()
+
+# ============================================================================
+# SEKCJA 4: VOTING
+# ============================================================================
+print("\n" + "="*70)
+print("SEKCJA 4: VOTING - PROSTA AGREGACJA MODELI")
+print("="*70)
+
+# Hard Voting - głosowanie większościowe
+voting_hard = VotingClassifier(
+    estimators=[
+        ('rf', RandomForestClassifier(n_estimators=50, random_state=42)),
+        ('gb', GradientBoostingClassifier(n_estimators=50, random_state=42)),
+        ('svm', SVC(kernel='rbf', probability=True, random_state=42))
+    ],
+    voting='hard'
+)
+
+scores_voting_hard = cross_val_score(voting_hard, X_train, y_train, cv=5, scoring='accuracy')
+print(f"\nHard Voting (RF + GB + SVM):")
+print(f"  CV Accuracy: {scores_voting_hard.mean():.4f} (+/- {scores_voting_hard.std():.4f})")
+
+# Soft Voting - uśrednianie prawdopodobieństw
+voting_soft = VotingClassifier(
+    estimators=[
+        ('rf', RandomForestClassifier(n_estimators=50, random_state=42)),
+        ('gb', GradientBoostingClassifier(n_estimators=50, random_state=42)),
+        ('svm', SVC(kernel='rbf', probability=True, random_state=42))
+    ],
+    voting='soft'
+)
+
+scores_voting_soft = cross_val_score(voting_soft, X_train, y_train, cv=5, scoring='accuracy')
+print(f"\nSoft Voting (RF + GB + SVM):")
+print(f"  CV Accuracy: {scores_voting_soft.mean():.4f} (+/- {scores_voting_soft.std():.4f})")
+
+# ============================================================================
+# SEKCJA 5: STACKING
+# ============================================================================
+print("\n" + "="*70)
+print("SEKCJA 5: STACKING - META-MODEL")
+print("="*70)
+
+# Definicja modeli bazowych
+base_learners = [
+    ('rf', RandomForestClassifier(n_estimators=50, random_state=42)),
+    ('gb', GradientBoostingClassifier(n_estimators=50, random_state=42)),
+    ('svm', SVC(kernel='rbf', probability=True, random_state=42)),
+    ('knn', KNeighborsClassifier(n_neighbors=5))
+]
+
+# Meta-model - Logistic Regression
+stacking = StackingClassifier(
+    estimators=base_learners,
+    final_estimator=LogisticRegression(max_iter=1000, random_state=42),
+    cv=5
+)
+
+scores_stacking = cross_val_score(stacking, X_train, y_train, cv=5, scoring='accuracy')
+print(f"\nStacking (RF + GB + SVM + KNN → RegLog):")
+print(f"  CV Accuracy: {scores_stacking.mean():.4f} (+/- {scores_stacking.std():.4f})")
+
+# ============================================================================
+# SEKCJA 6: PORÓWNANIE WSZYSTKICH METOD
+# ============================================================================
+print("\n" + "="*70)
+print("SEKCJA 6: PORÓWNANIE WSZYSTKICH METOD")
+print("="*70)
+
+# Zbieranie wyników
+all_results = {
+    'Drzewo decyzyjne': base_results['Drzewo decyzyjne']['mean'],
+    'Random Forest': scores_rf.mean(),
+    'Bagging': scores_bagging.mean(),
+    'AdaBoost': scores_ada.mean(),
+    'Gradient Boosting': scores_gb.mean(),
+    'Hard Voting': scores_voting_hard.mean(),
+    'Soft Voting': scores_voting_soft.mean(),
+    'Stacking': scores_stacking.mean()
+}
+
+# Sortowanie wyników
+sorted_results = dict(sorted(all_results.items(), key=lambda x: x[1], reverse=True))
+
+print("\nRanking metod (od najlepszej):")
+for i, (method, score) in enumerate(sorted_results.items(), 1):
+    print(f"{i}. {method:20s}: {score:.4f}")
+
+# Wizualizacja porównania
+plt.figure(figsize=(12, 6))
+methods = list(sorted_results.keys())
+scores = list(sorted_results.values())
+colors = ['red' if 'Drzewo' in m else 'green' if any(x in m for x in ['Bagging', 'Random', 'AdaBoost', 'Gradient'])
+          else 'blue' for m in methods]
+
+plt.barh(methods, scores, color=colors, alpha=0.7)
+plt.xlabel('CV Accuracy')
+plt.title('Porównanie metod ensemblingu')
+plt.xlim([min(scores) - 0.02, max(scores) + 0.02])
+for i, (method, score) in enumerate(zip(methods, scores)):
+    plt.text(score + 0.002, i, f'{score:.4f}', va='center', fontweight='bold')
+plt.tight_layout()
+plt.show()
+
+# ============================================================================
+# SEKCJA 7: OCENA NAJLEPSZEGO MODELU NA ZBIORZE TESTOWYM
+# ============================================================================
+print("\n" + "="*70)
+print("SEKCJA 7: OCENA NA ZBIORZE TESTOWYM")
+print("="*70)
+
+# Wybierz najlepszy model
+best_model_name = list(sorted_results.keys())[0]
+print(f"\nNajlepszy model: {best_model_name}")
+
+# Trenuj i testuj najlepszy model (użyjmy Stackingu)
+stacking.fit(X_train, y_train)
+y_pred = stacking.predict(X_test)
+
+print(f"\nWyniki na zbiorze testowym:")
+print(f"Accuracy: {accuracy_score(y_test, y_pred):.4f}")
+print(f"\nRaport klasyfikacji:\n{classification_report(y_test, y_pred)}")
+
+# Macierz pomyłek
+cm = confusion_matrix(y_test, y_pred)
+plt.figure(figsize=(8, 6))
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
+plt.title(f'Macierz pomyłek - {best_model_name}')
+plt.ylabel('Prawdziwa klasa')
+plt.xlabel('Przewidziana klasa')
+plt.tight_layout()
+plt.show()
+
+# Analiza błędów poszczególnych modeli bazowych
+print("\n" + "="*70)
+print("ANALIZA RÓŻNORODNOŚCI MODELI")
+print("="*70)
+
+# Trenuj modele bazowe
+base_predictions = {}
+for name, model in base_learners:
+    model.fit(X_train, y_train)
+    pred = model.predict(X_test)
+    base_predictions[name] = pred
+    print(f"\n{name} - Dokładność: {accuracy_score(y_test, pred):.4f}")
+
+# Analiza zgodności predykcji
+print("\nMacierz zgodności predykcji między modelami:")
+agreement_matrix = np.zeros((len(base_learners), len(base_learners)))
+
+for i, (name1, pred1) in enumerate(base_predictions.items()):
+    for j, (name2, pred2) in enumerate(base_predictions.items()):
+        agreement = np.mean(pred1 == pred2)
+        agreement_matrix[i, j] = agreement
+
+plt.figure(figsize=(8, 6))
+sns.heatmap(agreement_matrix, annot=True, fmt='.3f',
+            xticklabels=base_predictions.keys(),
+            yticklabels=base_predictions.keys(),
+            cmap='YlOrRd', vmin=0, vmax=1)
+plt.title('Zgodność predykcji między modelami\n(1.0 = całkowita zgodność)')
+plt.tight_layout()
+plt.show()
+
+print("\nWnioski:")
+print("- Metody zespołowe często poprawiają wyniki, uzyskane za pomocą pojedynczych modeli")
+print("- Bagging redukuje wariancję (działa najlepiej z niestabilnymi modelami)")
+print("- Boosting redukuje zarówno obciążenie ("bias") jak i wariancję")
+print("- Stacking może osiągnąć najlepsze wyniki, ale jest najbardziej złożony")
+print("- Różnorodność modeli bazowych jest istotna dla metod zespołowych")
+print("- Im mniejsza zgodność między modelami, tym większy potencjał ensemblingu")
+------------------
+
+
+[0;36m  Cell [0;32mIn[1], line 359[0;36m[0m
+[0;31m    print("- Boosting redukuje zarówno obciążenie ("bias") jak i wariancję")[0m
+[0m          ^[0m
+[0;31mSyntaxError[0m[0;31m:[0m invalid syntax. Perhaps you forgot a comma?
+
+

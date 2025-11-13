@@ -104,7 +104,7 @@ Traceback (most recent call last):  File "<frozen runpy>", line 198, in _run_mod
     if await self.run_code(code, result, async_=asy):
   File "/home/maciej/anaconda3/lib/python3.12/site-packages/IPython/core/interactiveshell.py", line 3577, in run_code
     exec(code_obj, self.user_global_ns, self.user_ns)
-  File "/tmp/ipykernel_16736/3634707806.py", line 3, in <module>
+  File "/tmp/ipykernel_11363/3634707806.py", line 3, in <module>
     import pandas as pd
   File "/home/maciej/anaconda3/lib/python3.12/site-packages/pandas/__init__.py", line 26, in <module>
     from pandas.compat import (
@@ -165,7 +165,7 @@ Traceback (most recent call last):  File "<frozen runpy>", line 198, in _run_mod
     if await self.run_code(code, result, async_=asy):
   File "/home/maciej/anaconda3/lib/python3.12/site-packages/IPython/core/interactiveshell.py", line 3577, in run_code
     exec(code_obj, self.user_global_ns, self.user_ns)
-  File "/tmp/ipykernel_16736/3634707806.py", line 3, in <module>
+  File "/tmp/ipykernel_11363/3634707806.py", line 3, in <module>
     import pandas as pd
   File "/home/maciej/anaconda3/lib/python3.12/site-packages/pandas/__init__.py", line 49, in <module>
     from pandas.core.api import (
@@ -226,7 +226,7 @@ Traceback (most recent call last):  File "<frozen runpy>", line 198, in _run_mod
     if await self.run_code(code, result, async_=asy):
   File "/home/maciej/anaconda3/lib/python3.12/site-packages/IPython/core/interactiveshell.py", line 3577, in run_code
     exec(code_obj, self.user_global_ns, self.user_ns)
-  File "/tmp/ipykernel_16736/3634707806.py", line 3, in <module>
+  File "/tmp/ipykernel_11363/3634707806.py", line 3, in <module>
     import pandas as pd
   File "/home/maciej/anaconda3/lib/python3.12/site-packages/pandas/__init__.py", line 49, in <module>
     from pandas.core.api import (
@@ -303,7 +303,7 @@ Traceback (most recent call last):  File "<frozen runpy>", line 198, in _run_mod
     if await self.run_code(code, result, async_=asy):
   File "/home/maciej/anaconda3/lib/python3.12/site-packages/IPython/core/interactiveshell.py", line 3577, in run_code
     exec(code_obj, self.user_global_ns, self.user_ns)
-  File "/tmp/ipykernel_16736/3634707806.py", line 3, in <module>
+  File "/tmp/ipykernel_11363/3634707806.py", line 3, in <module>
     import pandas as pd
   File "/home/maciej/anaconda3/lib/python3.12/site-packages/pandas/__init__.py", line 49, in <module>
     from pandas.core.api import (
@@ -376,7 +376,7 @@ Traceback (most recent call last):  File "<frozen runpy>", line 198, in _run_mod
     if await self.run_code(code, result, async_=asy):
   File "/home/maciej/anaconda3/lib/python3.12/site-packages/IPython/core/interactiveshell.py", line 3577, in run_code
     exec(code_obj, self.user_global_ns, self.user_ns)
-  File "/tmp/ipykernel_16736/3634707806.py", line 6, in <module>
+  File "/tmp/ipykernel_11363/3634707806.py", line 6, in <module>
     import matplotlib.pyplot as plt
   File "/home/maciej/anaconda3/lib/python3.12/site-packages/matplotlib/__init__.py", line 159, in <module>
     from . import _api, _version, cbook, _docstring, rcsetup

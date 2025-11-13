@@ -1,0 +1,721 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Wstępne przetwarzanie danych &#8212; Elementarne uczenie maszynowe</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b76e3c8a" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'podstawy/rozdzial_04_stary';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo.png" class="logo__image only-light" alt="Elementarne uczenie maszynowe - Home"/>
+    <script>document.write(`<img src="../_static/logo.png" class="logo__image only-dark" alt="Elementarne uczenie maszynowe - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="rozdzial_01_Wst%C4%99p_do_uczenia_maszynowego.html">Wstęp do uczenia maszynowego</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rozdzial_02_Rodzaje_uczenia_maszynowego.html">Rodzaje uczenia maszynowego</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rozdzial_03_Matematyka_w_uczeniu_maszynowym.html">Matematyka w uczeniu maszynowym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rozdzial_04_Wst%C4%99pne_przetwarzanie_danych.html">Wstępne przetwarzanie danych</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dane/rozdzial_05_Metryki_jako%C5%9Bci_w_uczeniu_maszynowym.html">Metryki jakości</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dane/rozdzial_06_In%C5%BCynieria_cech.html">Inżynieria cech</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../biblioteki/rozdzial_07_TensorFlow.html">Biblioteka TensorFlow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../biblioteki/rozdzial_08_PyTorch.html">Biblioteka Pytorch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../klasyczne_ml/rozdzial_09_Uczenie_nadzorowane.html">Uczenie nadzorowane</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../klasyczne_ml/rozdzial_10_Uczenie_nienadzorowane.html">Uczenie nienadzorowane</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../klasyczne_ml/rozdzial_11_Modele_liniowe_i_drzewiaste.html">Modele liniowe i drzewiaste</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../klasyczne_ml/rozdzial_13_Klasyfikacja_binarna_%C4%87wiczenia.html">Klasyfikacja binarna - ćwiczenia</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../walidacja/rozdzial_14_Walidacja_modeli.html">Walidacja modeli</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../g%C5%82%C4%99bokie_ml/rozdzial_15_Sieci_CNN.html">Sieci konwolucyjne</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../g%C5%82%C4%99bokie_ml/rozdzial_16_Sieci_RNN.html">Sieci rekurencyjne</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../g%C5%82%C4%99bokie_ml/rozdzial_17_Sieci_LSTM.html">Sieci LSTM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../g%C5%82%C4%99bokie_ml/rozdzial_18_Sieci_GAN.html">Sieci GAN</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../g%C5%82%C4%99bokie_ml/rozdzial_19_Architektury_sieci_neuronowych_1.html">Architektury sieci neuronowych, część 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../g%C5%82%C4%99bokie_ml/rozdzial_20_Transformery.html">Wstęp do transformerów</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ensembling/rozdzial_21_Ensembling.html">Metody zespołowe</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/maciej-janowicz/ml-book" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/podstawy/rozdzial_04_stary.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Wstępne przetwarzanie danych</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="wstepne-przetwarzanie-danych">
+<h1>Wstępne przetwarzanie danych<a class="headerlink" href="#wstepne-przetwarzanie-danych" title="Link to this heading">#</a></h1>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">czyszczenie_danych</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
+    <span class="c1"># Usuwanie podwojonych wierszy</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">inplace</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#</span>
+    <span class="c1"># Usuwanie części kolumn o charakterze identyfikacyjnym</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">df</span><span class="p">[[</span><span class="s1">&#39;Unnamed: 0&#39;</span><span class="p">,</span><span class="s1">&#39;ID_ZLA&#39;</span><span class="p">,</span> <span class="s1">&#39;ID_PL&#39;</span><span class="p">,</span> <span class="s1">&#39;ID_UB&#39;</span><span class="p">,</span> <span class="s1">&#39;ID_LEKARZ&#39;</span><span class="p">,</span> <span class="s1">&#39;ID_ZOZ&#39;</span><span class="p">,</span> <span class="s1">&#39;STAN_NA&#39;</span><span class="p">,</span>
+               <span class="s1">&#39;O_PAR01_STAN_NA&#39;</span><span class="p">]],</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="c1"># Określenie liczby kolumn z jedną wartością:</span>
+    <span class="n">liczba_kolumn_z_1_wartością</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span>
+    <span class="c1"># Określenie kolumn do usunięcia</span>
+    <span class="n">do_usunięcia</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">liczba_kolumn_z_1_wartością</span><span class="p">)</span> <span class="k">if</span> <span class="n">v</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="c1"># Usunięcie kolumn z jedną wartością:</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">do_usunięcia</span><span class="p">],</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#</span>
+    <span class="c1"># Wstawianie brakujących wartości typu float</span>
+    <span class="n">imputer</span> <span class="o">=</span> <span class="n">SimpleImputer</span><span class="p">(</span><span class="n">strategy</span> <span class="o">=</span> <span class="s1">&#39;mean&#39;</span><span class="p">)</span>
+    <span class="n">df1</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+    <span class="n">df_imp1</span>  <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">imputer</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">df1</span><span class="p">),</span> <span class="n">columns</span> <span class="o">=</span> <span class="n">df1</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+    <span class="c1"># Wstawianie brakujących wartości typu int64</span>
+    <span class="n">df2</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="s1">&#39;int64&#39;</span><span class="p">)</span>
+    <span class="n">imputer</span> <span class="o">=</span> <span class="n">SimpleImputer</span><span class="p">(</span><span class="n">strategy</span> <span class="o">=</span><span class="s1">&#39;most_frequent&#39;</span><span class="p">)</span>
+    <span class="n">df_imp2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">imputer</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">df2</span><span class="p">),</span> <span class="n">columns</span> <span class="o">=</span> <span class="n">df2</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+    <span class="c1"># Wstawianie brakujących wartości typu object</span>
+    <span class="n">df3</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="s1">&#39;object&#39;</span><span class="p">)</span>
+    <span class="n">imputer</span> <span class="o">=</span> <span class="n">SimpleImputer</span><span class="p">(</span><span class="n">strategy</span> <span class="o">=</span> <span class="s1">&#39;constant&#39;</span><span class="p">,</span> <span class="n">fill_value</span> <span class="o">=</span> <span class="s1">&#39;NIEZNANE&#39;</span><span class="p">)</span>
+    <span class="n">df_imp3</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">imputer</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">df3</span><span class="p">),</span> <span class="n">columns</span> <span class="o">=</span> <span class="n">df3</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df_imp1</span><span class="p">,</span> <span class="n">df_imp2</span><span class="p">,</span> <span class="n">df_imp3</span><span class="p">],</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="c1"># Usuwanie wartości odstających z kolumn typu float64</span>
+    <span class="n">lof</span> <span class="o">=</span> <span class="n">LocalOutlierFactor</span><span class="p">()</span>
+    <span class="n">mniam</span> <span class="o">=</span> <span class="n">lof</span><span class="o">.</span><span class="n">fit_predict</span><span class="p">(</span><span class="n">df_imp1</span><span class="p">)</span>
+    <span class="n">maska</span> <span class="o">=</span> <span class="n">mniam</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">df_pcz</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">maska</span><span class="p">]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Postacie ramek danych w funkcji czyszczenie&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">df1</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">df_imp1</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">df2</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">df_imp2</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">df3</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">df_imp3</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">df_pcz</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">czyszczenie_danych_ulepszone</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Czyszczenie ramki danych, występującej jako parametr formalny.</span>
+
+<span class="sd">    Argumenty:</span>
+<span class="sd">        df: obiekt pandas DataFrame, który ma być oczyszczony.</span>
+
+<span class="sd">    Zwraca:</span>
+<span class="sd">        oczyszczoną ramkę danych.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># 1. Usuwanie jednego z identycznych wierszy:</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># 2. Usuwanie niepotrzebnej kolumny z identyfikatorami oraz datami i czasem:</span>
+    <span class="c1">#   Utworzenie listy kolumn do usunięcia i ich usuwanie</span>
+    <span class="n">kolumny_do_usunięcia</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Unnamed: 0&#39;</span><span class="p">,</span> <span class="s1">&#39;ID_ZLA&#39;</span><span class="p">,</span> <span class="s1">&#39;ID_PL&#39;</span><span class="p">,</span> <span class="s1">&#39;ID_UB&#39;</span><span class="p">,</span> <span class="s1">&#39;ID_LEKARZ&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;ID_ZOZ&#39;</span><span class="p">,</span> <span class="s1">&#39;STAN_NA&#39;</span><span class="p">,</span> <span class="s1">&#39;O_PAR01_STAN_NA&#39;</span><span class="p">,</span> <span class="s1">&#39;DATA_WP&#39;</span><span class="p">]</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">kolumny_do_usunięcia</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># 3. Usuwanie kolumn, zawierających tylko jedną wartość:</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">df</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># 4. Wstawianie brakujących wartości przy użyciu modułu &#39;pipeline&#39;:</span>
+    <span class="c1">#   - Użycie klasy sklearn.pipeline.Pipeline zapewnia lepszą organizację</span>
+    <span class="c1">#   - Strategie wstawiania są różne w zależności od typu kolumny</span>
+    <span class="c1">#</span>
+    <span class="c1"># &#39;Pipeline&#39; jest narzędziem, które pozwala na łączenie różnych kroków</span>
+    <span class="c1"># przetwarzania danych i modelowania w jeden, spójny proces.</span>
+    <span class="c1"># Pipeline umożliwia automatyzację i uporządkowanie kolejnych etapów przetwarzania</span>
+    <span class="c1"># danych, takich jak przetwarzanie wstępne (np. skalowanie, kodowanie),</span>
+    <span class="c1"># selekcja cech i właściwe modelowanie.</span>
+
+    <span class="c1"># Główne zalety użycia Pipeline w scikit-learn to:</span>
+
+    <span class="c1"># 1. Uproszczenie kodu: Pipeline pozwala na zdefiniowanie całego procesu</span>
+    <span class="c1"># przetwarzania i modelowania w jednym miejscu, co czyni kod bardziej</span>
+    <span class="c1"># czytelnym i łatwym do zarządzania.</span>
+    <span class="c1"># 2. Unikanie błędów: Automatyzacja kolejnych kroków przetwarzania zmniejsza</span>
+    <span class="c1"># ryzyko popełnienia błędów, takich jak pominięcie ważnego etapu.</span>
+    <span class="c1"># Łatwe walidowanie krzyżowe: Pipeline może być łatwo użyty w walidacji krzyżowej,</span>
+    <span class="c1"># co ułatwia ocenę modelu i pozwala uniknąć wycieku danych (&quot;data leakage&quot;).</span>
+
+    <span class="kn">from</span> <span class="nn">sklearn.pipeline</span> <span class="kn">import</span> <span class="n">Pipeline</span>
+
+
+    <span class="c1"># SimpleImputer jest klasą w module sklearn.impute biblioteki scikit-learn,</span>
+    <span class="c1"># która służy do uzupełniania brakujących wartości (missing values) w zbiorze danych.</span>
+    <span class="c1"># Uzupełnianie brakujących wartości jest ważnym krokiem w przygotowaniu danych</span>
+    <span class="c1"># do analizy i modelowania, ponieważ wiele algorytmów uczenia maszynowego</span>
+    <span class="c1"># nie radzi sobie z brakującymi danymi.</span>
+
+    <span class="c1"># SimpleImputer oferuje kilka strategii uzupełniania brakujących wartości:</span>
+    <span class="c1"># Średnia (mean): Uzupełnianie brakujących wartości średnią z kolumny.</span>
+    <span class="c1"># Mediana (median): Uzupełnianie brakujących wartości medianą z kolumny.</span>
+    <span class="c1"># Najczęstsza wartość (most_frequent): Uzupełnianie brakujących wartości najczęściej występującą wartością w kolumnie.</span>
+    <span class="c1"># Stała wartość (constant): Uzupełnianie brakujących wartości określoną stałą wartością</span>
+
+    <span class="kn">from</span> <span class="nn">sklearn.impute</span> <span class="kn">import</span> <span class="n">SimpleImputer</span>
+
+
+    <span class="c1"># ColumnTransformer jest klasą w module sklearn.compose biblioteki scikit-learn,</span>
+    <span class="c1"># która pozwala na stosowanie różnych transformacji do różnych kolumn w zbiorze danych.</span>
+    <span class="c1"># Jest to przydatne, gdy różne kolumny wymagają różnych rodzajów przetwarzania,</span>
+    <span class="c1"># takich jak skalowanie, kodowanie kategorialnych zmiennych lub uzupełnianie</span>
+    <span class="c1"># brakujących wartości.</span>
+
+    <span class="c1"># ColumnTransformer umożliwia zdefiniowanie różnych transformacji dla różnych kolumn</span>
+    <span class="c1"># i łączy je w jeden, spójny proces. Można określić, które kolumny mają być</span>
+    <span class="c1"># przetwarzane przez które transformacje, co czyni ColumnTransformer</span>
+    <span class="c1"># bardzo elastycznym narzędziem do przygotowania danych.</span>
+
+    <span class="kn">from</span> <span class="nn">sklearn.compose</span> <span class="kn">import</span> <span class="n">ColumnTransformer</span>
+
+    <span class="n">cechy_numeryczne</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;number&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">columns</span>
+    <span class="n">cechy_kategorialne</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;object&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">columns</span>
+
+    <span class="n">potok_numeryczny</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">([</span>
+        <span class="p">(</span><span class="s1">&#39;imputer&#39;</span><span class="p">,</span> <span class="n">SimpleImputer</span><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">)),</span>
+    <span class="p">])</span>
+
+    <span class="n">potok_kategorialny</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">([</span>
+        <span class="p">(</span><span class="s1">&#39;imputer&#39;</span><span class="p">,</span> <span class="n">SimpleImputer</span><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s1">&#39;constant&#39;</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="s1">&#39;NIEZNANE&#39;</span><span class="p">)),</span>
+    <span class="p">])</span>
+
+    <span class="n">preprocessor</span> <span class="o">=</span> <span class="n">ColumnTransformer</span><span class="p">(</span>
+        <span class="n">transformers</span><span class="o">=</span><span class="p">[</span>
+            <span class="p">(</span><span class="s1">&#39;num&#39;</span><span class="p">,</span> <span class="n">potok_numeryczny</span><span class="p">,</span> <span class="n">cechy_numeryczne</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;cat&#39;</span><span class="p">,</span> <span class="n">potok_kategorialny</span><span class="p">,</span> <span class="n">cechy_kategorialne</span><span class="p">),</span>
+        <span class="p">])</span>
+
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">preprocessor</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">df</span><span class="p">),</span>
+                      <span class="n">columns</span><span class="o">=</span><span class="n">cechy_numeryczne</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="o">+</span> <span class="n">cechy_kategorialne</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+                      <span class="n">index</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>  <span class="c1"># Keep original index</span>
+
+    <span class="c1"># 5. Usuwanie wartości odstających za pomocą LocalOutlierFactor:</span>
+    <span class="c1">#   - Stosuje się tylko do cech numerycznych</span>
+
+
+
+    <span class="c1"># LocalOutlierFactor (LOF) jest algorytmem wykrywania anomalii (outliers)</span>
+    <span class="c1"># zawartym w module sklearn.neighbors biblioteki scikit-learn.</span>
+    <span class="c1"># Algorytm LOF służy do identyfikowania punktów danych, które są &quot;oddalone&quot;</span>
+    <span class="c1"># od reszty danych, co oznacza, że są rzadkie lub niezwykłe w porównaniu</span>
+    <span class="c1"># z resztą zbioru danych.</span>
+
+    <span class="c1"># LOF działa na zasadzie porównywania gęstości lokalnej punktów danych.</span>
+    <span class="c1"># Punkty, które mają niższą gęstość lokalną w porównaniu z ich sąsiadami,</span>
+    <span class="c1"># są uznawane za anomalie. Algorytm LOF jest szczególnie przydatny w przypadkach,</span>
+    <span class="c1"># anomalie nie są jednoznacznie oddalone od reszty danych,</span>
+    <span class="c1"># ale są rzadkie w lokalnym otoczeniu.</span>
+
+    <span class="c1"># Główne parametry LocalOutlierFactor to:</span>
+
+    <span class="c1"># n_neighbors: Liczba sąsiadów do rozważenia przy obliczaniu gęstości lokalnej.</span>
+    <span class="c1"># contamination: Proporcja anomalii w zbiorze danych. Używana do ustalenia progu decyzyjnego.</span>
+    <span class="c1"># novelty: Jeśli True, algorytm jest używany do wykrywania anomalii w nowych danych (novelty detection). Jeśli False, algorytm jest używany do wykrywania anomalii w danych treningowych.</span>
+    <span class="c1"># Metoda fit_predict zwraca etykiety, gdzie -1 oznacza anomalie, a 1 oznacza normalne punkty.</span>
+
+    <span class="kn">from</span> <span class="nn">sklearn.neighbors</span> <span class="kn">import</span> <span class="n">LocalOutlierFactor</span>
+
+    <span class="n">lof</span> <span class="o">=</span> <span class="n">LocalOutlierFactor</span><span class="p">()</span>
+    <span class="n">outlier_mask</span> <span class="o">=</span> <span class="n">lof</span><span class="o">.</span><span class="n">fit_predict</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">cechy_numeryczne</span><span class="p">])</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">outlier_mask</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">df</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">przygotowanie_danych</span><span class="p">(</span><span class="n">df_prim</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;hihi&quot;</span><span class="p">)</span>
+    <span class="n">dane_wyj</span> <span class="o">=</span> <span class="n">czyszczenie_danych</span><span class="p">(</span><span class="n">df_prim</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Postać danych dane_wyj&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">dane_wyj</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="c1"># Kodowanie danych typu &#39;int&#39; oraz &#39;object&#39;</span>
+    <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">dane_wyj</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span> <span class="o">=</span> <span class="s1">&#39;fraud_wyk&#39;</span><span class="p">),</span> <span class="n">dane_wyj</span><span class="p">[[</span><span class="s1">&#39;fraud_wyk&#39;</span><span class="p">]]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">Xfloat</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+    <span class="n">Xkat</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;float64&#39;</span><span class="p">])</span>
+    <span class="n">Xkat_dumm</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">get_dummies</span><span class="p">(</span><span class="n">Xkat</span><span class="p">)</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">Xfloat</span><span class="p">,</span> <span class="n">Xkat_dumm</span><span class="p">],</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+<span class="c1">#    dane_wyj = pd.concat([X, y], axis = 1)</span>
+    <span class="n">sc</span> <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span>
+    <span class="n">mmsc</span> <span class="o">=</span> <span class="n">MinMaxScaler</span><span class="p">()</span>
+    <span class="n">dane_wyj_float</span> <span class="o">=</span> <span class="n">dane_wyj</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+<span class="c1">#    dane_wyj_int = dane_wyj.select_dtypes(&#39;int64&#39;)</span>
+<span class="c1">#    dane_wyj_obj = dane_wyj.select_dtypes(&#39;object&#39;)</span>
+
+    <span class="n">data_num</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">dane_wyj_float</span><span class="p">,</span> <span class="n">dane_wyj</span><span class="p">[</span><span class="s1">&#39;fraud_wyk&#39;</span><span class="p">]],</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Postać danych data_num&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">data_num</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">selekcja_cech_num</span><span class="p">(</span><span class="n">data_num</span><span class="p">)</span>
+
+    <span class="n">data_kat</span> <span class="o">=</span> <span class="n">dane_wyj</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;float64&#39;</span><span class="p">])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Postać danych data_kat&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">data_kat</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+
+    <span class="n">Xtrain</span><span class="p">,</span> <span class="n">Xtest</span><span class="p">,</span> <span class="n">ytrain</span><span class="p">,</span> <span class="n">ytest</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">test_size</span> <span class="o">=</span> <span class="mf">0.33</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;W funkcji przygotowanie_danych&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">Xtrain</span><span class="p">),</span> <span class="n">Xtrain</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">ytrain</span><span class="p">),</span> <span class="n">ytrain</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+          <span class="nb">type</span><span class="p">(</span><span class="n">Xtest</span><span class="p">),</span> <span class="n">Xtest</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">ytest</span><span class="p">),</span> <span class="n">ytest</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">Xtrain_float</span> <span class="o">=</span> <span class="n">Xtrain</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+    <span class="n">Xtest_float</span> <span class="o">=</span> <span class="n">Xtest</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+    <span class="n">Xtrain_reszta</span> <span class="o">=</span> <span class="n">Xtrain</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;float64&#39;</span><span class="p">])</span>
+    <span class="n">Xtest_reszta</span> <span class="o">=</span> <span class="n">Xtest</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;float64&#39;</span><span class="p">])</span>
+    <span class="n">mmsc</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">Xtrain_float</span><span class="p">)</span>
+    <span class="n">Xtrain_float</span> <span class="o">=</span> <span class="n">mmsc</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">Xtrain_float</span><span class="p">)</span>
+    <span class="n">mmsc</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">Xtest_float</span><span class="p">)</span>
+    <span class="n">Xtrain</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">Xtrain_float</span><span class="p">,</span> <span class="n">Xtrain_reszta</span><span class="p">],</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">Xtest</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">Xtest_float</span><span class="p">,</span> <span class="n">Xtest_reszta</span><span class="p">],</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">Xtrain</span><span class="p">,</span> <span class="n">Xtest</span><span class="p">,</span> <span class="n">ytrain</span><span class="p">,</span> <span class="n">ytest</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">przygotowanie_danych</span><span class="p">(</span><span class="n">df_prim</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;hihi&quot;</span><span class="p">)</span>
+    <span class="n">dane_wyj</span> <span class="o">=</span> <span class="n">czyszczenie_danych</span><span class="p">(</span><span class="n">df_prim</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Postać danych dane_wyj&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">dane_wyj</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="c1"># Kodowanie danych typu &#39;int&#39; oraz &#39;object&#39;</span>
+    <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">dane_wyj</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span> <span class="o">=</span> <span class="s1">&#39;fraud_wyk&#39;</span><span class="p">),</span> <span class="n">dane_wyj</span><span class="p">[[</span><span class="s1">&#39;fraud_wyk&#39;</span><span class="p">]]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">Xfloat</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+    <span class="n">Xkat</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;float64&#39;</span><span class="p">])</span>
+    <span class="n">Xkat_dumm</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">get_dummies</span><span class="p">(</span><span class="n">Xkat</span><span class="p">)</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">Xfloat</span><span class="p">,</span> <span class="n">Xkat_dumm</span><span class="p">],</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+<span class="c1">#    dane_wyj = pd.concat([X, y], axis = 1)</span>
+
+    <span class="n">mmsc</span> <span class="o">=</span> <span class="n">MinMaxScaler</span><span class="p">()</span>
+
+    <span class="n">dane_wyj_float</span> <span class="o">=</span> <span class="n">dane_wyj</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+
+    <span class="n">data_num</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">dane_wyj_float</span><span class="p">,</span> <span class="n">dane_wyj</span><span class="p">[</span><span class="s1">&#39;fraud_wyk&#39;</span><span class="p">]],</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Postać danych data_num&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">data_num</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+    <span class="n">Xtrain</span><span class="p">,</span> <span class="n">Xtest</span><span class="p">,</span> <span class="n">ytrain</span><span class="p">,</span> <span class="n">ytest</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">test_size</span> <span class="o">=</span> <span class="mf">0.33</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;W funkcji przygotowanie_danych&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">Xtrain</span><span class="p">),</span> <span class="n">Xtrain</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">ytrain</span><span class="p">),</span> <span class="n">ytrain</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+          <span class="nb">type</span><span class="p">(</span><span class="n">Xtest</span><span class="p">),</span> <span class="n">Xtest</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">ytest</span><span class="p">),</span> <span class="n">ytest</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">Xtrain_float</span> <span class="o">=</span> <span class="n">Xtrain</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+    <span class="n">Xtest_float</span> <span class="o">=</span> <span class="n">Xtest</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+    <span class="n">Xtrain_reszta</span> <span class="o">=</span> <span class="n">Xtrain</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;float64&#39;</span><span class="p">])</span>
+    <span class="n">Xtest_reszta</span> <span class="o">=</span> <span class="n">Xtest</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;float64&#39;</span><span class="p">])</span>
+
+    <span class="n">mmsc</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">Xtrain_float</span><span class="p">)</span>
+    <span class="n">Xtrain_float</span> <span class="o">=</span> <span class="n">mmsc</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">Xtrain_float</span><span class="p">)</span>  <span class="c1"># Przypisanie danych przekształconych</span>
+    <span class="n">Xtest_float</span> <span class="o">=</span> <span class="n">mmsc</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">Xtest_float</span><span class="p">)</span>   <span class="c1"># Przypisanie danych przekształconych</span>
+
+    <span class="n">Xtrain</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">Xtrain_float</span><span class="p">,</span> <span class="n">Xtrain_reszta</span><span class="p">],</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">Xtest</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">Xtest_float</span><span class="p">,</span> <span class="n">Xtest_reszta</span><span class="p">],</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">Xtrain</span><span class="p">,</span> <span class="n">Xtest</span><span class="p">,</span> <span class="n">ytrain</span><span class="p">,</span> <span class="n">ytest</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./podstawy"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Maciej Janowicz
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

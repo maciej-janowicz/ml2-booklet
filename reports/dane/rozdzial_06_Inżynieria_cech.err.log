@@ -1,0 +1,736 @@
+Traceback (most recent call last):
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/jupyter_cache/executors/utils.py", line 58, in single_nb_execution
+    executenb(
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/nbclient/client.py", line 1305, in execute
+    return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/jupyter_core/utils/__init__.py", line 165, in wrapped
+    return loop.run_until_complete(inner)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/maciej/anaconda3/lib/python3.12/asyncio/base_events.py", line 685, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/nbclient/client.py", line 705, in async_execute
+    await self.async_execute_cell(
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/nbclient/client.py", line 1058, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/nbclient/client.py", line 914, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.preprocessing import StandardScaler, LabelEncoder
+from sklearn.feature_selection import SelectKBest, mutual_info_classif
+from sklearn.metrics import classification_report, confusion_matrix
+import warnings
+warnings.filterwarnings('ignore')
+
+# Utworzenie syntetycznego zbioru danych podobnego do Titanica
+np.random.seed(42)
+n_samples = 800
+
+# Generowanie danych syntetycznych
+data = pd.DataFrame({
+    'Wiek': np.random.normal(30, 15, n_samples).clip(0.5, 80),
+    'Cena': np.random.lognormal(3, 1.5, n_samples).clip(0, 500),
+    'Klasa': np.random.choice([1, 2, 3], n_samples, p=[0.2, 0.3, 0.5]),
+    'Plec': np.random.choice(['mezczyzna', 'kobieta'], n_samples, p=[0.65, 0.35]),
+    'Rodzenstwo': np.random.choice([0, 1, 2, 3], n_samples, p=[0.6, 0.25, 0.1, 0.05]),
+    'Rodzice': np.random.choice([0, 1, 2], n_samples, p=[0.7, 0.2, 0.1]),
+    'Port': np.random.choice(['Southampton', 'Cherbourg', 'Queenstown'], n_samples, p=[0.7, 0.2, 0.1])
+})
+# 'Port' oznacza 'port zaokrętowania'.
+
+
+# Generowanie zmiennej docelowej z zależnościami
+survived_prob = (
+    0.1 +  # baseline
+    (data['Plec'] == 'kobieta').astype(int) * 0.4 +  # kobiety mają wyższą szansę
+    (data['Klasa'] == 1).astype(int) * 0.3 +  # pierwsza klasa ma wyższą szansę
+    (data['Wiek'] < 15).astype(int) * 0.2 +  # dzieci mają wyższą szansę
+    np.random.normal(0, 0.15, n_samples)  # szum
+).clip(0, 1)
+
+data['Przezycie'] = (np.random.random(n_samples) < survived_prob).astype(int)
+
+print("="*70)
+print("DANE WEJŚCIOWE")
+print("="*70)
+print(f"\nRozmiar zbioru: {data.shape}")
+print(f"\nPierwsze wiersze:\n{data.head()}")
+print(f"\nInformacje o danych:")
+print(data.info())
+print(f"\nRozkład klasy docelowej:\n{data['Przezycie'].value_counts()}")
+print(f"\nBrakujące wartości:\n{data.isnull().sum()}")
+
+# Wprowadzenie kilku brakujących wartości
+data.loc[np.random.choice(data.index, 50, replace=False), 'Wiek'] = np.nan
+data.loc[np.random.choice(data.index, 20, replace=False), 'Cena'] = np.nan
+
+print(f"\nBrakujące wartości po wprowadzeniu braków:\n{data.isnull().sum()}")
+
+# Podział na X i y
+X = data.drop('Przezycie', axis=1)
+y = data['Przezycie']
+
+# Podział train-test
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+print("\n" + "="*70)
+print("INŻYNIERIA CECH - KROK PO KROKU")
+print("="*70)
+
+# KROK 1: Uzupełnienie brakujących wartości
+print("\nKROK 1: Uzupełnienie brakujących wartości")
+
+X_train_fe = X_train.copy()
+X_test_fe = X_test.copy()
+
+# Uzupełnienie wieku medianą
+wiek_median = X_train_fe['Wiek'].median()
+X_train_fe['Wiek'].fillna(wiek_median, inplace=True)
+X_test_fe['Wiek'].fillna(wiek_median, inplace=True)
+
+# Uzupełnienie ceny medianą
+cena_median = X_train_fe['Cena'].median()
+X_train_fe['Cena'].fillna(cena_median, inplace=True)
+X_test_fe['Cena'].fillna(cena_median, inplace=True)
+
+print(f"  Uzupełniono Wiek medianą: {wiek_median:.2f}")
+print(f"  Uzupełniono Cena medianą: {cena_median:.2f}")
+
+# KROK 2: Tworzenie nowych cech
+print("\nKROK 2: Tworzenie nowych cech")
+
+# RozmiarRodziny = Rodzenstwo + Rodzice + 1
+X_train_fe['RozmiarRodziny'] = X_train_fe['Rodzenstwo'] + X_train_fe['Rodzice'] + 1
+X_test_fe['RozmiarRodziny'] = X_test_fe['Rodzenstwo'] + X_test_fe['Rodzice'] + 1
+
+# CzySam - czy pasażer podróżuje sam
+X_train_fe['CzySam'] = (X_train_fe['RozmiarRodziny'] == 1).astype(int)
+X_test_fe['CzySam'] = (X_test_fe['RozmiarRodziny'] == 1).astype(int)
+
+# GrupaWiekowa - grupowanie wieku
+def kategoryzuj_wiek(wiek):
+    if wiek < 12:
+        return 'Dziecko'
+    elif wiek < 18:
+        return 'Nastolatek'
+    elif wiek < 65:
+        return 'Dorosly'
+    else:
+        return 'Senior'
+
+X_train_fe['GrupaWiekowa'] = X_train_fe['Wiek'].apply(kategoryzuj_wiek)
+X_test_fe['GrupaWiekowa'] = X_test_fe['Wiek'].apply(kategoryzuj_wiek)
+
+# CenaNaOsobe - cena na osobę w rodzinie
+X_train_fe['CenaNaOsobe'] = X_train_fe['Cena'] / X_train_fe['RozmiarRodziny']
+X_test_fe['CenaNaOsobe'] = X_test_fe['Cena'] / X_test_fe['RozmiarRodziny']
+
+# PrzedzialCeny - dyskretyzacja ceny biletu
+X_train_fe['PrzedzialCeny'] = pd.qcut(X_train_fe['Cena'], q=4, labels=['Niska', 'Srednia', 'Wysoka', 'BardzoWysoka'], duplicates='drop')
+# Dla test używamy tych samych przedziałów co dla train
+cena_bins = pd.qcut(X_train_fe['Cena'], q=4, retbins=True, duplicates='drop')[1]
+X_test_fe['PrzedzialCeny'] = pd.cut(X_test_fe['Cena'], bins=cena_bins, labels=['Niska', 'Srednia', 'Wysoka', 'BardzoWysoka'], include_lowest=True)
+
+print("  Utworzono cechy:")
+print("    - RozmiarRodziny: liczba członków rodziny")
+print("    - CzySam: czy pasażer sam")
+print("    - GrupaWiekowa: kategoria wieku")
+print("    - CenaNaOsobe: cena na osobę")
+print("    - PrzedzialCeny: przedział cenowy")
+
+# KROK 3: Kodowanie zmiennych kategorycznych
+print("\nKROK 3: Kodowanie zmiennych kategorycznych")
+
+# Label Encoding dla zmiennych ordinalnych
+X_train_fe['Klasa_zakodowana'] = X_train_fe['Klasa']
+X_test_fe['Klasa_zakodowana'] = X_test_fe['Klasa']
+
+# One-Hot Encoding dla zmiennych nominalnych
+categorical_cols = ['Plec', 'Port', 'GrupaWiekowa', 'PrzedzialCeny']
+
+for col in categorical_cols:
+    # One-hot encoding
+    train_dummies = pd.get_dummies(X_train_fe[col], prefix=col, drop_first=True)
+    test_dummies = pd.get_dummies(X_test_fe[col], prefix=col, drop_first=True)
+
+    # Upewnij się, że test ma te same kolumny co train
+    for col_dummy in train_dummies.columns:
+        if col_dummy not in test_dummies.columns:
+            test_dummies[col_dummy] = 0
+
+    X_train_fe = pd.concat([X_train_fe, train_dummies], axis=1)
+    X_test_fe = pd.concat([X_test_fe, test_dummies], axis=1)
+
+print(f"  Zakodowano {len(categorical_cols)} zmiennych kategorycznych")
+
+# KROK 4: Interakcje cech
+print("\nKROK 4: Tworzenie interakcji między cechami")
+
+# Interakcja: Plec z Klasa
+X_train_fe['Plec_Klasa'] = (X_train_fe['Plec_mezczyzna'] * X_train_fe['Klasa_zakodowana'])
+X_test_fe['Plec_Klasa'] = (X_test_fe['Plec_mezczyzna'] * X_test_fe['Klasa_zakodowana'])
+
+# Interakcja: Wiek z RozmiarRodziny
+X_train_fe['Wiek_RozmiarRodziny'] = X_train_fe['Wiek'] * X_train_fe['RozmiarRodziny']
+X_test_fe['Wiek_RozmiarRodziny'] = X_test_fe['Wiek'] * X_test_fe['RozmiarRodziny']
+
+print("  Utworzono interakcje: Plec_Klasa, Wiek_RozmiarRodziny")
+
+# Usunięcie oryginalnych kolumn kategorycznych
+cols_to_drop = ['Plec', 'Port', 'GrupaWiekowa', 'PrzedzialCeny']
+X_train_fe.drop(cols_to_drop, axis=1, inplace=True)
+X_test_fe.drop(cols_to_drop, axis=1, inplace=True)
+
+# KROK 5: Skalowanie cech numerycznych
+print("\nKROK 5: Skalowanie cech numerycznych")
+
+numerical_cols = ['Wiek', 'Cena', 'CenaNaOsobe', 'Wiek_RozmiarRodziny']
+scaler = StandardScaler()
+
+X_train_fe[numerical_cols] = scaler.fit_transform(X_train_fe[numerical_cols])
+X_test_fe[numerical_cols] = scaler.transform(X_test_fe[numerical_cols])
+
+print(f"  Przeskalowano {len(numerical_cols)} cech numerycznych")
+
+print(f"\nLiczba cech po inżynierii: {X_train_fe.shape[1]}")
+print(f"Lista cech: {list(X_train_fe.columns)}")
+
+# KROK 6: Selekcja cech - porównanie metod
+print("\n" + "="*70)
+print("SELEKCJA CECH")
+print("="*70)
+
+# Metoda 1: SelectKBest z mutual information
+selector_mi = SelectKBest(mutual_info_classif, k=10)
+X_train_mi = selector_mi.fit_transform(X_train_fe, y_train)
+X_test_mi = selector_mi.transform(X_test_fe)
+
+selected_features_mi = X_train_fe.columns[selector_mi.get_support()].tolist()
+print(f"\nMetoda 1 - Mutual Information (top 10 cech):")
+print(f"  {selected_features_mi}")
+
+# Metoda 2: Feature importance z Random Forest
+rf_temp = RandomForestClassifier(n_estimators=100, random_state=42)
+rf_temp.fit(X_train_fe, y_train)
+
+feature_importance = pd.DataFrame({
+    'cecha': X_train_fe.columns,
+    'waznosc': rf_temp.feature_importances_
+}).sort_values('waznosc', ascending=False)
+
+print(f"\nMetoda 2 - Feature Importance (Random Forest):")
+print(feature_importance.head(10))
+
+# Wizualizacja ważności cech
+plt.figure(figsize=(10, 6))
+plt.barh(feature_importance['cecha'].head(10), feature_importance['waznosc'].head(10))
+plt.xlabel('Ważność cechy')
+plt.title('Top 10 najważniejszych cech (Random Forest)')
+plt.gca().invert_yaxis()
+plt.tight_layout()
+plt.show()
+
+# KROK 7: Porównanie modeli
+print("\n" + "="*70)
+print("PORÓWNANIE MODELI")
+print("="*70)
+
+models_comparison = {}
+
+# Model na surowych danych (tylko podstawowe kodowanie)
+X_train_basic = X_train.copy()
+X_test_basic = X_test.copy()
+
+# Podstawowe przetworzenie
+X_train_basic['Wiek'].fillna(X_train_basic['Wiek'].median(), inplace=True)
+X_test_basic['Wiek'].fillna(X_train_basic['Wiek'].median(), inplace=True)
+X_train_basic['Cena'].fillna(X_train_basic['Cena'].median(), inplace=True)
+X_test_basic['Cena'].fillna(X_train_basic['Cena'].median(), inplace=True)
+
+le = LabelEncoder()
+for col in ['Plec', 'Port']:
+    X_train_basic[col] = le.fit_transform(X_train_basic[col])
+    X_test_basic[col] = le.transform(X_test_basic[col])
+
+# Model 1: Na podstawowych cechach
+lr_basic = LogisticRegression(max_iter=1000, random_state=42)
+scores_basic = cross_val_score(lr_basic, X_train_basic, y_train, cv=5, scoring='accuracy')
+models_comparison['Podstawowe cechy'] = scores_basic.mean()
+
+print(f"\nModel na podstawowych cechach:")
+print(f"  CV Accuracy: {scores_basic.mean():.4f} (+/- {scores_basic.std():.4f})")
+
+# Model 2: Na cechach po inżynierii
+lr_fe = LogisticRegression(max_iter=1000, random_state=42)
+scores_fe = cross_val_score(lr_fe, X_train_fe, y_train, cv=5, scoring='accuracy')
+models_comparison['Po inżynierii cech'] = scores_fe.mean()
+
+print(f"\nModel po inżynierii cech:")
+print(f"  CV Accuracy: {scores_fe.mean():.4f} (+/- {scores_fe.std():.4f})")
+
+# Model 3: Po selekcji cech
+lr_selected = LogisticRegression(max_iter=1000, random_state=42)
+scores_selected = cross_val_score(lr_selected, X_train_mi, y_train, cv=5, scoring='accuracy')
+models_comparison['Po selekcji cech'] = scores_selected.mean()
+
+print(f"\nModel po selekcji cech:")
+print(f"  CV Accuracy: {scores_selected.mean():.4f} (+/- {scores_selected.std():.4f})")
+
+# Wykres porównania
+plt.figure(figsize=(10, 6))
+plt.bar(models_comparison.keys(), models_comparison.values(), color=['red', 'green', 'blue'])
+plt.ylabel('Accuracy')
+plt.title('Wpływ inżynierii cech na wydajność modelu')
+plt.ylim([0.6, 0.9])
+for i, (k, v) in enumerate(models_comparison.items()):
+    plt.text(i, v + 0.01, f'{v:.4f}', ha='center', fontweight='bold')
+plt.tight_layout()
+plt.show()
+
+# Finalna ocena na zbiorze testowym
+lr_fe.fit(X_train_fe, y_train)
+y_pred = lr_fe.predict(X_test_fe)
+
+print("\n" + "="*70)
+print("FINALNA OCENA NA ZBIORZE TESTOWYM")
+print("="*70)
+print("\nRaport klasyfikacji:")
+print(classification_report(y_test, y_pred))
+
+# Macierz pomyłek
+cm = confusion_matrix(y_test, y_pred)
+plt.figure(figsize=(8, 6))
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
+plt.title('Macierz pomyłek')
+plt.ylabel('Prawdziwa klasa')
+plt.xlabel('Przewidziana klasa')
+plt.tight_layout()
+plt.show()
+
+print("\nWnioski:")
+print("UWAGA: W tym przypadku inżynieria cech POGORSZYŁA wyniki!")
+print("- To normalne. Nie każda inżynieria cech 'działa'")
+print("- Zbyt wiele cech może prowadzić do przeuczenia")
+print("- Proste dane + prosty model często = najlepsze wyniki")
+print("- Zawsze należy sprawdzać wpływ nowych cech!")
+print("- W praktyce trzeba testować różne ich kombinacje i wybrać najlepszą")
+------------------
+
+----- stderr -----
+
+A module that was compiled using NumPy 1.x cannot be run in
+NumPy 2.2.6 as it may crash. To support both 1.x and 2.x
+versions of NumPy, modules must be compiled with NumPy 2.0.
+Some module may need to rebuild instead e.g. with 'pybind11>=2.12'.
+
+If you are a user of the module, the easiest solution will be to
+downgrade to 'numpy<2' or try to upgrade the affected module.
+We expect that some modules will need time to support NumPy 2.
+
+Traceback (most recent call last):  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/ipykernel_launcher.py", line 17, in <module>
+    app.launch_new_instance()
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/traitlets/config/application.py", line 1075, in launch_instance
+    app.start()
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/ipykernel/kernelapp.py", line 701, in start
+    self.io_loop.start()
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/tornado/platform/asyncio.py", line 205, in start
+    self.asyncio_loop.run_forever()
+  File "/home/maciej/anaconda3/lib/python3.12/asyncio/base_events.py", line 639, in run_forever
+    self._run_once()
+  File "/home/maciej/anaconda3/lib/python3.12/asyncio/base_events.py", line 1985, in _run_once
+    handle._run()
+  File "/home/maciej/anaconda3/lib/python3.12/asyncio/events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/ipykernel/kernelbase.py", line 534, in dispatch_queue
+    await self.process_one()
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/ipykernel/kernelbase.py", line 523, in process_one
+    await dispatch(*args)
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/ipykernel/kernelbase.py", line 429, in dispatch_shell
+    await result
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/ipykernel/kernelbase.py", line 767, in execute_request
+    reply_content = await reply_content
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/ipykernel/ipkernel.py", line 429, in do_execute
+    res = shell.run_cell(
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/ipykernel/zmqshell.py", line 549, in run_cell
+    return super().run_cell(*args, **kwargs)
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/IPython/core/interactiveshell.py", line 3075, in run_cell
+    result = self._run_cell(
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/IPython/core/interactiveshell.py", line 3130, in _run_cell
+    result = runner(coro)
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/IPython/core/async_helpers.py", line 128, in _pseudo_sync_runner
+    coro.send(None)
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/IPython/core/interactiveshell.py", line 3334, in run_cell_async
+    has_raised = await self.run_ast_nodes(code_ast.body, cell_name,
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/IPython/core/interactiveshell.py", line 3517, in run_ast_nodes
+    if await self.run_code(code, result, async_=asy):
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/IPython/core/interactiveshell.py", line 3577, in run_code
+    exec(code_obj, self.user_global_ns, self.user_ns)
+  File "/tmp/ipykernel_10901/286114223.py", line 2, in <module>
+    import pandas as pd
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/pandas/__init__.py", line 26, in <module>
+    from pandas.compat import (
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/pandas/compat/__init__.py", line 29, in <module>
+    from pandas.compat.pyarrow import (
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/pandas/compat/pyarrow.py", line 8, in <module>
+    import pyarrow as pa
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/pyarrow/__init__.py", line 65, in <module>
+    import pyarrow.lib as _lib
+----- stderr -----
+
+A module that was compiled using NumPy 1.x cannot be run in
+NumPy 2.2.6 as it may crash. To support both 1.x and 2.x
+versions of NumPy, modules must be compiled with NumPy 2.0.
+Some module may need to rebuild instead e.g. with 'pybind11>=2.12'.
+
+If you are a user of the module, the easiest solution will be to
+downgrade to 'numpy<2' or try to upgrade the affected module.
+We expect that some modules will need time to support NumPy 2.
+
+Traceback (most recent call last):  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/ipykernel_launcher.py", line 17, in <module>
+    app.launch_new_instance()
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/traitlets/config/application.py", line 1075, in launch_instance
+    app.start()
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/ipykernel/kernelapp.py", line 701, in start
+    self.io_loop.start()
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/tornado/platform/asyncio.py", line 205, in start
+    self.asyncio_loop.run_forever()
+  File "/home/maciej/anaconda3/lib/python3.12/asyncio/base_events.py", line 639, in run_forever
+    self._run_once()
+  File "/home/maciej/anaconda3/lib/python3.12/asyncio/base_events.py", line 1985, in _run_once
+    handle._run()
+  File "/home/maciej/anaconda3/lib/python3.12/asyncio/events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/ipykernel/kernelbase.py", line 534, in dispatch_queue
+    await self.process_one()
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/ipykernel/kernelbase.py", line 523, in process_one
+    await dispatch(*args)
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/ipykernel/kernelbase.py", line 429, in dispatch_shell
+    await result
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/ipykernel/kernelbase.py", line 767, in execute_request
+    reply_content = await reply_content
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/ipykernel/ipkernel.py", line 429, in do_execute
+    res = shell.run_cell(
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/ipykernel/zmqshell.py", line 549, in run_cell
+    return super().run_cell(*args, **kwargs)
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/IPython/core/interactiveshell.py", line 3075, in run_cell
+    result = self._run_cell(
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/IPython/core/interactiveshell.py", line 3130, in _run_cell
+    result = runner(coro)
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/IPython/core/async_helpers.py", line 128, in _pseudo_sync_runner
+    coro.send(None)
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/IPython/core/interactiveshell.py", line 3334, in run_cell_async
+    has_raised = await self.run_ast_nodes(code_ast.body, cell_name,
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/IPython/core/interactiveshell.py", line 3517, in run_ast_nodes
+    if await self.run_code(code, result, async_=asy):
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/IPython/core/interactiveshell.py", line 3577, in run_code
+    exec(code_obj, self.user_global_ns, self.user_ns)
+  File "/tmp/ipykernel_10901/286114223.py", line 2, in <module>
+    import pandas as pd
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/pandas/__init__.py", line 49, in <module>
+    from pandas.core.api import (
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/pandas/core/api.py", line 9, in <module>
+    from pandas.core.dtypes.dtypes import (
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/pandas/core/dtypes/dtypes.py", line 24, in <module>
+    from pandas._libs import (
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/pyarrow/__init__.py", line 65, in <module>
+    import pyarrow.lib as _lib
+----- stderr -----
+
+A module that was compiled using NumPy 1.x cannot be run in
+NumPy 2.2.6 as it may crash. To support both 1.x and 2.x
+versions of NumPy, modules must be compiled with NumPy 2.0.
+Some module may need to rebuild instead e.g. with 'pybind11>=2.12'.
+
+If you are a user of the module, the easiest solution will be to
+downgrade to 'numpy<2' or try to upgrade the affected module.
+We expect that some modules will need time to support NumPy 2.
+
+Traceback (most recent call last):  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/ipykernel_launcher.py", line 17, in <module>
+    app.launch_new_instance()
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/traitlets/config/application.py", line 1075, in launch_instance
+    app.start()
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/ipykernel/kernelapp.py", line 701, in start
+    self.io_loop.start()
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/tornado/platform/asyncio.py", line 205, in start
+    self.asyncio_loop.run_forever()
+  File "/home/maciej/anaconda3/lib/python3.12/asyncio/base_events.py", line 639, in run_forever
+    self._run_once()
+  File "/home/maciej/anaconda3/lib/python3.12/asyncio/base_events.py", line 1985, in _run_once
+    handle._run()
+  File "/home/maciej/anaconda3/lib/python3.12/asyncio/events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/ipykernel/kernelbase.py", line 534, in dispatch_queue
+    await self.process_one()
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/ipykernel/kernelbase.py", line 523, in process_one
+    await dispatch(*args)
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/ipykernel/kernelbase.py", line 429, in dispatch_shell
+    await result
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/ipykernel/kernelbase.py", line 767, in execute_request
+    reply_content = await reply_content
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/ipykernel/ipkernel.py", line 429, in do_execute
+    res = shell.run_cell(
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/ipykernel/zmqshell.py", line 549, in run_cell
+    return super().run_cell(*args, **kwargs)
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/IPython/core/interactiveshell.py", line 3075, in run_cell
+    result = self._run_cell(
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/IPython/core/interactiveshell.py", line 3130, in _run_cell
+    result = runner(coro)
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/IPython/core/async_helpers.py", line 128, in _pseudo_sync_runner
+    coro.send(None)
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/IPython/core/interactiveshell.py", line 3334, in run_cell_async
+    has_raised = await self.run_ast_nodes(code_ast.body, cell_name,
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/IPython/core/interactiveshell.py", line 3517, in run_ast_nodes
+    if await self.run_code(code, result, async_=asy):
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/IPython/core/interactiveshell.py", line 3577, in run_code
+    exec(code_obj, self.user_global_ns, self.user_ns)
+  File "/tmp/ipykernel_10901/286114223.py", line 2, in <module>
+    import pandas as pd
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/pandas/__init__.py", line 49, in <module>
+    from pandas.core.api import (
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/pandas/core/api.py", line 28, in <module>
+    from pandas.core.arrays import Categorical
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/pandas/core/arrays/__init__.py", line 1, in <module>
+    from pandas.core.arrays.arrow import ArrowExtensionArray
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/pandas/core/arrays/arrow/__init__.py", line 5, in <module>
+    from pandas.core.arrays.arrow.array import ArrowExtensionArray
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/pandas/core/arrays/arrow/array.py", line 53, in <module>
+    from pandas.core import (
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/pandas/core/ops/__init__.py", line 8, in <module>
+    from pandas.core.ops.array_ops import (
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/pandas/core/ops/array_ops.py", line 56, in <module>
+    from pandas.core.computation import expressions
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/pandas/core/computation/expressions.py", line 21, in <module>
+    from pandas.core.computation.check import NUMEXPR_INSTALLED
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/pandas/core/computation/check.py", line 5, in <module>
+    ne = import_optional_dependency("numexpr", errors="warn")
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/pandas/compat/_optional.py", line 135, in import_optional_dependency
+    module = importlib.import_module(name)
+  File "/home/maciej/anaconda3/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/numexpr/__init__.py", line 24, in <module>
+    from numexpr.interpreter import MAX_THREADS, use_vml, __BLOCK_SIZE1__
+----- stderr -----
+
+A module that was compiled using NumPy 1.x cannot be run in
+NumPy 2.2.6 as it may crash. To support both 1.x and 2.x
+versions of NumPy, modules must be compiled with NumPy 2.0.
+Some module may need to rebuild instead e.g. with 'pybind11>=2.12'.
+
+If you are a user of the module, the easiest solution will be to
+downgrade to 'numpy<2' or try to upgrade the affected module.
+We expect that some modules will need time to support NumPy 2.
+
+Traceback (most recent call last):  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/ipykernel_launcher.py", line 17, in <module>
+    app.launch_new_instance()
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/traitlets/config/application.py", line 1075, in launch_instance
+    app.start()
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/ipykernel/kernelapp.py", line 701, in start
+    self.io_loop.start()
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/tornado/platform/asyncio.py", line 205, in start
+    self.asyncio_loop.run_forever()
+  File "/home/maciej/anaconda3/lib/python3.12/asyncio/base_events.py", line 639, in run_forever
+    self._run_once()
+  File "/home/maciej/anaconda3/lib/python3.12/asyncio/base_events.py", line 1985, in _run_once
+    handle._run()
+  File "/home/maciej/anaconda3/lib/python3.12/asyncio/events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/ipykernel/kernelbase.py", line 534, in dispatch_queue
+    await self.process_one()
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/ipykernel/kernelbase.py", line 523, in process_one
+    await dispatch(*args)
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/ipykernel/kernelbase.py", line 429, in dispatch_shell
+    await result
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/ipykernel/kernelbase.py", line 767, in execute_request
+    reply_content = await reply_content
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/ipykernel/ipkernel.py", line 429, in do_execute
+    res = shell.run_cell(
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/ipykernel/zmqshell.py", line 549, in run_cell
+    return super().run_cell(*args, **kwargs)
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/IPython/core/interactiveshell.py", line 3075, in run_cell
+    result = self._run_cell(
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/IPython/core/interactiveshell.py", line 3130, in _run_cell
+    result = runner(coro)
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/IPython/core/async_helpers.py", line 128, in _pseudo_sync_runner
+    coro.send(None)
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/IPython/core/interactiveshell.py", line 3334, in run_cell_async
+    has_raised = await self.run_ast_nodes(code_ast.body, cell_name,
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/IPython/core/interactiveshell.py", line 3517, in run_ast_nodes
+    if await self.run_code(code, result, async_=asy):
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/IPython/core/interactiveshell.py", line 3577, in run_code
+    exec(code_obj, self.user_global_ns, self.user_ns)
+  File "/tmp/ipykernel_10901/286114223.py", line 2, in <module>
+    import pandas as pd
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/pandas/__init__.py", line 49, in <module>
+    from pandas.core.api import (
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/pandas/core/api.py", line 28, in <module>
+    from pandas.core.arrays import Categorical
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/pandas/core/arrays/__init__.py", line 1, in <module>
+    from pandas.core.arrays.arrow import ArrowExtensionArray
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/pandas/core/arrays/arrow/__init__.py", line 5, in <module>
+    from pandas.core.arrays.arrow.array import ArrowExtensionArray
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/pandas/core/arrays/arrow/array.py", line 67, in <module>
+    from pandas.core.arrays.masked import BaseMaskedArray
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/pandas/core/arrays/masked.py", line 61, in <module>
+    from pandas.core import (
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/pandas/core/nanops.py", line 52, in <module>
+    bn = import_optional_dependency("bottleneck", errors="warn")
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/pandas/compat/_optional.py", line 135, in import_optional_dependency
+    module = importlib.import_module(name)
+  File "/home/maciej/anaconda3/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/bottleneck/__init__.py", line 7, in <module>
+    from .move import (move_argmax, move_argmin, move_max, move_mean, move_median,
+----- stderr -----
+
+A module that was compiled using NumPy 1.x cannot be run in
+NumPy 2.2.6 as it may crash. To support both 1.x and 2.x
+versions of NumPy, modules must be compiled with NumPy 2.0.
+Some module may need to rebuild instead e.g. with 'pybind11>=2.12'.
+
+If you are a user of the module, the easiest solution will be to
+downgrade to 'numpy<2' or try to upgrade the affected module.
+We expect that some modules will need time to support NumPy 2.
+
+Traceback (most recent call last):  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/ipykernel_launcher.py", line 17, in <module>
+    app.launch_new_instance()
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/traitlets/config/application.py", line 1075, in launch_instance
+    app.start()
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/ipykernel/kernelapp.py", line 701, in start
+    self.io_loop.start()
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/tornado/platform/asyncio.py", line 205, in start
+    self.asyncio_loop.run_forever()
+  File "/home/maciej/anaconda3/lib/python3.12/asyncio/base_events.py", line 639, in run_forever
+    self._run_once()
+  File "/home/maciej/anaconda3/lib/python3.12/asyncio/base_events.py", line 1985, in _run_once
+    handle._run()
+  File "/home/maciej/anaconda3/lib/python3.12/asyncio/events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/ipykernel/kernelbase.py", line 534, in dispatch_queue
+    await self.process_one()
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/ipykernel/kernelbase.py", line 523, in process_one
+    await dispatch(*args)
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/ipykernel/kernelbase.py", line 429, in dispatch_shell
+    await result
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/ipykernel/kernelbase.py", line 767, in execute_request
+    reply_content = await reply_content
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/ipykernel/ipkernel.py", line 429, in do_execute
+    res = shell.run_cell(
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/ipykernel/zmqshell.py", line 549, in run_cell
+    return super().run_cell(*args, **kwargs)
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/IPython/core/interactiveshell.py", line 3075, in run_cell
+    result = self._run_cell(
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/IPython/core/interactiveshell.py", line 3130, in _run_cell
+    result = runner(coro)
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/IPython/core/async_helpers.py", line 128, in _pseudo_sync_runner
+    coro.send(None)
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/IPython/core/interactiveshell.py", line 3334, in run_cell_async
+    has_raised = await self.run_ast_nodes(code_ast.body, cell_name,
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/IPython/core/interactiveshell.py", line 3517, in run_ast_nodes
+    if await self.run_code(code, result, async_=asy):
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/IPython/core/interactiveshell.py", line 3577, in run_code
+    exec(code_obj, self.user_global_ns, self.user_ns)
+  File "/tmp/ipykernel_10901/286114223.py", line 3, in <module>
+    import matplotlib.pyplot as plt
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/matplotlib/__init__.py", line 159, in <module>
+    from . import _api, _version, cbook, _docstring, rcsetup
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/matplotlib/rcsetup.py", line 28, in <module>
+    from matplotlib.colors import Colormap, is_color_like
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/matplotlib/colors.py", line 57, in <module>
+    from matplotlib import _api, _cm, cbook, scale
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/matplotlib/scale.py", line 22, in <module>
+    from matplotlib.ticker import (
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/matplotlib/ticker.py", line 144, in <module>
+    from matplotlib import transforms as mtransforms
+  File "/home/maciej/anaconda3/lib/python3.12/site-packages/matplotlib/transforms.py", line 49, in <module>
+    from matplotlib._path import (
+------------------
+
+[0;31m---------------------------------------------------------------------------[0m
+[0;31mImportError[0m                               Traceback (most recent call last)
+[0;31mImportError[0m: numpy.core.multiarray failed to import
+
+The above exception was the direct cause of the following exception:
+
+[0;31mImportError[0m                               Traceback (most recent call last)
+Cell [0;32mIn[1], line 3[0m
+[1;32m      1[0m [38;5;28;01mimport[39;00m [38;5;21;01mnumpy[39;00m [38;5;28;01mas[39;00m [38;5;21;01mnp[39;00m
+[1;32m      2[0m [38;5;28;01mimport[39;00m [38;5;21;01mpandas[39;00m [38;5;28;01mas[39;00m [38;5;21;01mpd[39;00m
+[0;32m----> 3[0m [38;5;28;01mimport[39;00m [38;5;21;01mmatplotlib[39;00m[38;5;21;01m.[39;00m[38;5;21;01mpyplot[39;00m [38;5;28;01mas[39;00m [38;5;21;01mplt[39;00m
+[1;32m      4[0m [38;5;28;01mimport[39;00m [38;5;21;01mseaborn[39;00m [38;5;28;01mas[39;00m [38;5;21;01msns[39;00m
+[1;32m      5[0m [38;5;28;01mfrom[39;00m [38;5;21;01msklearn[39;00m[38;5;21;01m.[39;00m[38;5;21;01mmodel_selection[39;00m [38;5;28;01mimport[39;00m train_test_split, cross_val_score
+
+File [0;32m~/anaconda3/lib/python3.12/site-packages/matplotlib/__init__.py:159[0m
+[1;32m    155[0m [38;5;28;01mfrom[39;00m [38;5;21;01mpackaging[39;00m[38;5;21;01m.[39;00m[38;5;21;01mversion[39;00m [38;5;28;01mimport[39;00m parse [38;5;28;01mas[39;00m parse_version
+[1;32m    157[0m [38;5;66;03m# cbook must import matplotlib only within function[39;00m
+[1;32m    158[0m [38;5;66;03m# definitions, so it is safe to import from it here.[39;00m
+[0;32m--> 159[0m [38;5;28;01mfrom[39;00m [38;5;21;01m.[39;00m [38;5;28;01mimport[39;00m _api, _version, cbook, _docstring, rcsetup
+[1;32m    160[0m [38;5;28;01mfrom[39;00m [38;5;21;01mmatplotlib[39;00m[38;5;21;01m.[39;00m[38;5;21;01mcbook[39;00m [38;5;28;01mimport[39;00m sanitize_sequence
+[1;32m    161[0m [38;5;28;01mfrom[39;00m [38;5;21;01mmatplotlib[39;00m[38;5;21;01m.[39;00m[38;5;21;01m_api[39;00m [38;5;28;01mimport[39;00m MatplotlibDeprecationWarning
+
+File [0;32m~/anaconda3/lib/python3.12/site-packages/matplotlib/rcsetup.py:28[0m
+[1;32m     26[0m [38;5;28;01mfrom[39;00m [38;5;21;01mmatplotlib[39;00m[38;5;21;01m.[39;00m[38;5;21;01mbackends[39;00m [38;5;28;01mimport[39;00m BackendFilter, backend_registry
+[1;32m     27[0m [38;5;28;01mfrom[39;00m [38;5;21;01mmatplotlib[39;00m[38;5;21;01m.[39;00m[38;5;21;01mcbook[39;00m [38;5;28;01mimport[39;00m ls_mapper
+[0;32m---> 28[0m [38;5;28;01mfrom[39;00m [38;5;21;01mmatplotlib[39;00m[38;5;21;01m.[39;00m[38;5;21;01mcolors[39;00m [38;5;28;01mimport[39;00m Colormap, is_color_like
+[1;32m     29[0m [38;5;28;01mfrom[39;00m [38;5;21;01mmatplotlib[39;00m[38;5;21;01m.[39;00m[38;5;21;01m_fontconfig_pattern[39;00m [38;5;28;01mimport[39;00m parse_fontconfig_pattern
+[1;32m     30[0m [38;5;28;01mfrom[39;00m [38;5;21;01mmatplotlib[39;00m[38;5;21;01m.[39;00m[38;5;21;01m_enums[39;00m [38;5;28;01mimport[39;00m JoinStyle, CapStyle
+
+File [0;32m~/anaconda3/lib/python3.12/site-packages/matplotlib/colors.py:57[0m
+[1;32m     55[0m [38;5;28;01mimport[39;00m [38;5;21;01mmatplotlib[39;00m [38;5;28;01mas[39;00m [38;5;21;01mmpl[39;00m
+[1;32m     56[0m [38;5;28;01mimport[39;00m [38;5;21;01mnumpy[39;00m [38;5;28;01mas[39;00m [38;5;21;01mnp[39;00m
+[0;32m---> 57[0m [38;5;28;01mfrom[39;00m [38;5;21;01mmatplotlib[39;00m [38;5;28;01mimport[39;00m _api, _cm, cbook, scale
+[1;32m     58[0m [38;5;28;01mfrom[39;00m [38;5;21;01m.[39;00m[38;5;21;01m_color_data[39;00m [38;5;28;01mimport[39;00m BASE_COLORS, TABLEAU_COLORS, CSS4_COLORS, XKCD_COLORS
+[1;32m     61[0m [38;5;28;01mclass[39;00m [38;5;21;01m_ColorMapping[39;00m([38;5;28mdict[39m):
+
+File [0;32m~/anaconda3/lib/python3.12/site-packages/matplotlib/scale.py:22[0m
+[1;32m     20[0m [38;5;28;01mimport[39;00m [38;5;21;01mmatplotlib[39;00m [38;5;28;01mas[39;00m [38;5;21;01mmpl[39;00m
+[1;32m     21[0m [38;5;28;01mfrom[39;00m [38;5;21;01mmatplotlib[39;00m [38;5;28;01mimport[39;00m _api, _docstring
+[0;32m---> 22[0m [38;5;28;01mfrom[39;00m [38;5;21;01mmatplotlib[39;00m[38;5;21;01m.[39;00m[38;5;21;01mticker[39;00m [38;5;28;01mimport[39;00m (
+[1;32m     23[0m     NullFormatter, ScalarFormatter, LogFormatterSciNotation, LogitFormatter,
+[1;32m     24[0m     NullLocator, LogLocator, AutoLocator, AutoMinorLocator,
+[1;32m     25[0m     SymmetricalLogLocator, AsinhLocator, LogitLocator)
+[1;32m     26[0m [38;5;28;01mfrom[39;00m [38;5;21;01mmatplotlib[39;00m[38;5;21;01m.[39;00m[38;5;21;01mtransforms[39;00m [38;5;28;01mimport[39;00m Transform, IdentityTransform
+[1;32m     29[0m [38;5;28;01mclass[39;00m [38;5;21;01mScaleBase[39;00m:
+
+File [0;32m~/anaconda3/lib/python3.12/site-packages/matplotlib/ticker.py:144[0m
+[1;32m    142[0m [38;5;28;01mimport[39;00m [38;5;21;01mmatplotlib[39;00m [38;5;28;01mas[39;00m [38;5;21;01mmpl[39;00m
+[1;32m    143[0m [38;5;28;01mfrom[39;00m [38;5;21;01mmatplotlib[39;00m [38;5;28;01mimport[39;00m _api, cbook
+[0;32m--> 144[0m [38;5;28;01mfrom[39;00m [38;5;21;01mmatplotlib[39;00m [38;5;28;01mimport[39;00m transforms [38;5;28;01mas[39;00m mtransforms
+[1;32m    146[0m _log [38;5;241m=[39m logging[38;5;241m.[39mgetLogger([38;5;18m__name__[39m)
+[1;32m    148[0m __all__ [38;5;241m=[39m ([38;5;124m'[39m[38;5;124mTickHelper[39m[38;5;124m'[39m, [38;5;124m'[39m[38;5;124mFormatter[39m[38;5;124m'[39m, [38;5;124m'[39m[38;5;124mFixedFormatter[39m[38;5;124m'[39m,
+[1;32m    149[0m            [38;5;124m'[39m[38;5;124mNullFormatter[39m[38;5;124m'[39m, [38;5;124m'[39m[38;5;124mFuncFormatter[39m[38;5;124m'[39m, [38;5;124m'[39m[38;5;124mFormatStrFormatter[39m[38;5;124m'[39m,
+[1;32m    150[0m            [38;5;124m'[39m[38;5;124mStrMethodFormatter[39m[38;5;124m'[39m, [38;5;124m'[39m[38;5;124mScalarFormatter[39m[38;5;124m'[39m, [38;5;124m'[39m[38;5;124mLogFormatter[39m[38;5;124m'[39m,
+[0;32m   (...)[0m
+[1;32m    156[0m            [38;5;124m'[39m[38;5;124mMultipleLocator[39m[38;5;124m'[39m, [38;5;124m'[39m[38;5;124mMaxNLocator[39m[38;5;124m'[39m, [38;5;124m'[39m[38;5;124mAutoMinorLocator[39m[38;5;124m'[39m,
+[1;32m    157[0m            [38;5;124m'[39m[38;5;124mSymmetricalLogLocator[39m[38;5;124m'[39m, [38;5;124m'[39m[38;5;124mAsinhLocator[39m[38;5;124m'[39m, [38;5;124m'[39m[38;5;124mLogitLocator[39m[38;5;124m'[39m)
+
+File [0;32m~/anaconda3/lib/python3.12/site-packages/matplotlib/transforms.py:49[0m
+[1;32m     46[0m [38;5;28;01mfrom[39;00m [38;5;21;01mnumpy[39;00m[38;5;21;01m.[39;00m[38;5;21;01mlinalg[39;00m [38;5;28;01mimport[39;00m inv
+[1;32m     48[0m [38;5;28;01mfrom[39;00m [38;5;21;01mmatplotlib[39;00m [38;5;28;01mimport[39;00m _api
+[0;32m---> 49[0m [38;5;28;01mfrom[39;00m [38;5;21;01mmatplotlib[39;00m[38;5;21;01m.[39;00m[38;5;21;01m_path[39;00m [38;5;28;01mimport[39;00m (
+[1;32m     50[0m     affine_transform, count_bboxes_overlapping_bbox, update_path_extents)
+[1;32m     51[0m [38;5;28;01mfrom[39;00m [38;5;21;01m.[39;00m[38;5;21;01mpath[39;00m [38;5;28;01mimport[39;00m Path
+[1;32m     53[0m DEBUG [38;5;241m=[39m [38;5;28;01mFalse[39;00m
+
+[0;31mImportError[0m: initialization failed
+
